@@ -2,8 +2,9 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+from matplotlib.collections import LineCollection
 
-# Fait avec ChatGPT 5.0 et affiné par Jeremy Serillon.
+# This file was done at LTS5 as a Semester Project by Jeremy Serillon and refined for this project
 # ---------------------------------------------------------------------------
 
 def plot_df_histogram(
@@ -403,3 +404,328 @@ def visualize_species_split(
 
 
 # ---------------------------------------------------------------------------
+def plot_df_two_class(df, x_col, y_col, figsize=(12, 6),
+                      title=None, cmap='viridis', save_path=None,
+                      trace: str = "lines"):
+    """
+    Plot x_col vs y_col with points colored by y (low -> high) using `cmap`.
+
+    trace options:
+      - None / "none": only points
+      - "lines": connect points with gradient-colored segments (by local y)
+      - "poly": polynomial fit (degree 3 by default), gradient-colored by fitted y; shows mean/std of yfit
+      - "gauss": Gaussian fit y = A * exp(-(x-μ)^2/(2σ^2)) in ORANGE; shows μ and σ
+
+    Notes:
+      - x_col and y_col must be numeric (no parsing).
+      - 'fit' uses degree=3 by default (capped to len(x)-1).
+      - 'gauss' requires at least 3 positive y values (log-fit).
+    """
+    if x_col not in df.columns or y_col not in df.columns:
+        missing = [c for c in (x_col, y_col) if c not in df.columns]
+        raise KeyError(f"Column(s) not found: {', '.join(missing)}")
+
+    valid = {None, "none", "lines", "poly", "gauss"}
+    t = (trace if trace is None else str(trace).lower())
+    if t not in valid:
+        raise ValueError("trace must be one of {None, 'lines', 'fit', 'gauss'}")
+    trace_mode = None if t in (None, "none", "None") else t
+
+    data = df[[x_col, y_col]].copy().dropna()
+    x = pd.to_numeric(data[x_col], errors='raise').to_numpy()
+    y = pd.to_numeric(data[y_col], errors='raise').to_numpy()
+
+    # Sort by x for sensible connections/fit
+    order = np.argsort(x)
+    x = x[order]
+    y = y[order]
+
+    # Colormap for points / gradient lines
+    try:
+        cmap_obj = plt.get_cmap(cmap)
+    except Exception:
+        cmap_obj = plt.get_cmap('tab20')
+    norm = plt.Normalize(vmin=np.min(y), vmax=np.max(y))
+
+    fig, ax = plt.subplots(figsize=figsize)
+
+    # Helper for number formatting in annotations
+    _fmt = lambda v: f"{v:.4g}"
+
+    # ----- traces -----
+    if trace_mode == "lines" and len(x) >= 2:
+        n_sub = 32
+        seg_points, seg_colors = [], []
+        for xi, yi, xj, yj in zip(x[:-1], y[:-1], x[1:], y[1:]):
+            xf = np.linspace(xi, xj, n_sub + 1)
+            yf = np.linspace(yi, yj, n_sub + 1)
+            pts = np.column_stack([xf, yf]).reshape(-1, 1, 2)
+            segs = np.concatenate([pts[:-1], pts[1:]], axis=1)
+            seg_points.append(segs)
+            seg_colors.append((yf[:-1] + yf[1:]) / 2.0)
+        seg_points = np.concatenate(seg_points, axis=0)
+        seg_colors = np.concatenate(seg_colors, axis=0)
+        lc = LineCollection(seg_points, cmap=cmap_obj, norm=norm, linewidth=1.8, zorder=2)
+        lc.set_array(seg_colors)
+        ax.add_collection(lc)
+
+    yfit = None
+    deg = None
+
+    if trace_mode == "poly" and len(x) >= 2:
+        deg = int(min(3, max(1, len(x) - 1)))  # default 3, capped by data
+        coeffs = np.polyfit(x, y, deg=deg)
+        xfit = np.linspace(x.min(), x.max(), 600)
+        yfit = np.polyval(coeffs, xfit)
+        # solid orange fit line above points
+        ax.plot(xfit, yfit, color='orange', linewidth=2.0, zorder=4)
+        # annotate caracteristics (coefs, ...) of the fitted curve
+        ax.text(0.02, 0.98, f"coeffs: " + ", ".join([_fmt(c) for c in coeffs]),
+                transform=ax.transAxes, ha='left', va='top', fontsize=9,
+                color='orange', bbox=dict(facecolor='white', alpha=0.5, edgecolor='none'), zorder=6)
+
+    # ----- points (always) -----
+    ax.scatter(x, y, c=y, cmap=cmap_obj, norm=norm, s=28, zorder=3)
+
+    # ----- Gaussian fit (orange, on top) -----
+    if trace_mode == "gauss" and len(x) >= 3:
+        mask = y > 0
+        if mask.sum() >= 3:
+            xg, yg = x[mask], y[mask]
+            c2, c1, c0 = np.polyfit(xg, np.log(yg), 2)
+            if c2 < 0:
+                sigma = float(np.sqrt(-1.0 / (2.0 * c2)))
+                mu = float(c1 * (sigma ** 2))
+                A = float(np.exp(c0 + (mu ** 2) / (2.0 * sigma ** 2)))
+                xfit = np.linspace(x.min(), x.max(), 600)
+                yfit_g = A * np.exp(-((xfit - mu) ** 2) / (2.0 * sigma ** 2))
+                ax.plot(xfit, yfit_g, color='orange', linewidth=2.5, zorder=5)
+                # annotate μ and σ
+                ax.text(0.02, 0.98, f"μ = {_fmt(mu)}\nσ = {_fmt(sigma)}",
+                        transform=ax.transAxes, ha='left', va='top', fontsize=9,
+                        color='orange', bbox=dict(facecolor='white', alpha=0.5, edgecolor='none'),
+                        zorder=6)
+
+    # ----- labels, limits, title -----
+    def _ordinal(n: int) -> str:
+        return f"{n}{'st' if n%10==1 and n%100!=11 else 'nd' if n%10==2 and n%100!=12 else 'rd' if n%10==3 and n%100!=13 else 'th'}"
+
+    base_title = title or f"{y_col} vs {x_col}"
+    if trace_mode == "poly":
+        base_title += f" (with pol. curve {_ordinal(deg)} deg)"
+    elif trace_mode == "gauss":
+        base_title += " (with Gaussian fit)"
+    ax.set_title(base_title)
+
+    ax.set_xlabel(x_col)
+    ax.set_ylabel(y_col)
+    ax.grid(True, alpha=0.25)
+
+    if len(x) > 0:
+        xr = (x.max() - x.min()) or 1.0
+        yr = (y.max() - y.min()) or 1.0
+        ax.set_xlim(x.min() - 0.02 * xr, x.max() + 0.02 * xr)
+        ax.set_ylim(y.min() - 0.02 * yr, y.max() + 0.02 * yr)
+
+    plt.tight_layout()
+
+    if save_path:
+        fig.savefig(save_path, dpi=300, bbox_inches='tight')
+
+    plt.show()
+
+    return pd.DataFrame({x_col: x, y_col: y})
+
+
+
+
+# ---------------------------------------------------------------------------
+def plot_df_pairgrid(
+    df: pd.DataFrame,
+    cols: list,
+    trace: str = "None",              # {None/'none','lines','fit','gauss'}
+    cmap: str = "viridis",
+    figsize=(12, 12),
+    include_upper: bool = False,       # plot both triangles if True; otherwise only lower
+    diagonal: str = "name",            # {'name','blank'} what to show on diagonal cells
+    save_path: str | None = None,
+):
+    """
+    Plot a grid of subplots for all (x,y) pairs from `cols`, using a style consistent
+    with plot_df_two_class: points colored by y (low->high) and optional trace.
+
+    Parameters
+    ----------
+    df : DataFrame
+    cols : list[str]
+        Numeric columns to cross-plot.
+    trace : {None, 'none', 'lines', 'fit', 'gauss'}
+    cmap : str
+    figsize : tuple
+        Overall figure size.
+    include_upper : bool
+        If False, only the lower triangle (i>j). If True, both triangles.
+    diagonal : {'name','blank'}
+        What to draw on the diagonal cells.
+    save_path : str | None
+        If provided, saves the figure to this path.
+
+    Returns
+    -------
+    dict
+        Mapping (x_col, y_col) -> plotted row count for that cell.
+    """
+
+    # --- validate & prepare ---
+    if not cols:
+        raise ValueError("`cols` must be a non-empty list of column names.")
+    for c in cols:
+        if c not in df.columns:
+            raise KeyError(f"Column '{c}' not found in dataframe.")
+
+    # normalize trace
+    valid_trace = {None, "none", "lines", "fit", "gauss"}
+    t = (trace if trace is None else str(trace).lower())
+    if t not in valid_trace:
+        raise ValueError("trace must be one of {None, 'lines', 'fit', 'gauss'}")
+    trace_mode = None if t in (None, "none") else t
+
+    # Colormap object (fallback if invalid)
+    try:
+        cmap_obj = plt.get_cmap(cmap)
+    except Exception:
+        cmap_obj = plt.get_cmap("tab20")
+
+    n = len(cols)
+    fig, axes = plt.subplots(n, n, figsize=figsize, squeeze=False)
+    out_counts = {}
+
+    def _ordinal(k: int) -> str:
+        return f"{k}{'st' if k%10==1 and k%100!=11 else 'nd' if k%10==2 and k%100!=12 else 'rd' if k%10==3 and k%100!=13 else 'th'}"
+
+    def _plot_xy_on_ax(ax, x_col, y_col):
+        """Mirror of plot_df_two_class behavior, rendered onto a given Axes."""
+        # Clean numeric data
+        data = df[[x_col, y_col]].copy().dropna()
+        try:
+            x = pd.to_numeric(data[x_col], errors="raise").to_numpy()
+            y = pd.to_numeric(data[y_col], errors="raise").to_numpy()
+        except Exception:
+            ax.text(0.5, 0.5, "non-numeric", ha="center", va="center", transform=ax.transAxes)
+            return 0
+
+        if len(x) == 0:
+            ax.text(0.5, 0.5, "no data", ha="center", va="center", transform=ax.transAxes)
+            return 0
+
+        # sort by x for sensible connections/fit
+        order = np.argsort(x)
+        x = x[order]
+        y = y[order]
+
+        # color normalization per-plot (same as plot_df_two_class)
+        norm = plt.Normalize(vmin=np.min(y), vmax=np.max(y))
+
+        # ----- trace (optional) -----
+        if trace_mode == "lines" and len(x) >= 2:
+            n_sub = 32
+            seg_points, seg_colors = [], []
+            for xi, yi, xj, yj in zip(x[:-1], y[:-1], x[1:], y[1:]):
+                xf = np.linspace(xi, xj, n_sub + 1)
+                yf = np.linspace(yi, yj, n_sub + 1)
+                pts = np.column_stack([xf, yf]).reshape(-1, 1, 2)
+                segs = np.concatenate([pts[:-1], pts[1:]], axis=1)
+                seg_points.append(segs)
+                seg_colors.append((yf[:-1] + yf[1:]) / 2.0)
+            seg_points = np.concatenate(seg_points, axis=0)
+            seg_colors = np.concatenate(seg_colors, axis=0)
+            lc = LineCollection(seg_points, cmap=cmap_obj, norm=norm, linewidth=1.2, zorder=2)
+            lc.set_array(seg_colors)
+            ax.add_collection(lc)
+
+        if trace_mode == "fit" and len(x) >= 2:
+            deg = int(min(3, max(1, len(x) - 1)))
+            coeffs = np.polyfit(x, y, deg=deg)
+            xfit = np.linspace(x.min(), x.max(), 400)
+            yfit = np.polyval(coeffs, xfit)
+            pts = np.column_stack([xfit, yfit]).reshape(-1, 1, 2)
+            segs = np.concatenate([pts[:-1], pts[1:]], axis=1)
+            y_mid = (yfit[:-1] + yfit[1:]) / 2.0
+            lc = LineCollection(segs, cmap=cmap_obj, norm=norm, linewidth=1.6, zorder=4)
+            lc.set_array(y_mid)
+            ax.add_collection(lc)
+            # annotate mean/std of fitted curve (compact)
+            ax.text(0.02, 0.98,
+                    f"μ={np.mean(yfit):.3g}, σ={np.std(yfit):.3g}",
+                    transform=ax.transAxes, ha="left", va="top",
+                    fontsize=7, bbox=dict(facecolor="white", alpha=0.6, edgecolor="none"),
+                    zorder=6)
+
+        if trace_mode == "gauss" and len(x) >= 3:
+            mask = y > 0
+            if mask.sum() >= 3:
+                xg, yg = x[mask], y[mask]
+                c2, c1, c0 = np.polyfit(xg, np.log(yg), 2)
+                if c2 < 0:
+                    sigma = float(np.sqrt(-1.0 / (2.0 * c2)))
+                    mu = float(c1 * (sigma ** 2))
+                    A = float(np.exp(c0 + (mu ** 2) / (2.0 * sigma ** 2)))
+                    xfit = np.linspace(x.min(), x.max(), 400)
+                    yfit_g = A * np.exp(-((xfit - mu) ** 2) / (2.0 * sigma ** 2))
+                    ax.plot(xfit, yfit_g, color="orange", linewidth=1.8, zorder=5)
+                    ax.text(0.02, 0.98,
+                            f"μ={mu:.3g}, σ={sigma:.3g}",
+                            transform=ax.transAxes, ha="left", va="top",
+                            fontsize=7, bbox=dict(facecolor="white", alpha=0.6, edgecolor="none"),
+                            zorder=6)
+
+        # ----- points (always) -----
+        ax.scatter(x, y, c=y, cmap=cmap_obj, norm=norm, s=12, zorder=3)
+
+        # tidy axes
+        xr = (x.max() - x.min()) or 1.0
+        yr = (y.max() - y.min()) or 1.0
+        ax.set_xlim(x.min() - 0.02 * xr, x.max() + 0.02 * xr)
+        ax.set_ylim(y.min() - 0.02 * yr, y.max() + 0.02 * yr)
+        return len(x)
+
+    # --- build grid ---
+    for i, y_col in enumerate(cols):
+        for j, x_col in enumerate(cols):
+            ax = axes[i, j]
+
+            if i == j:
+                # diagonal
+                if diagonal == "name":
+                    ax.text(0.5, 0.5, y_col, ha="center", va="center", fontsize=10, transform=ax.transAxes)
+                ax.set_xticks([])
+                ax.set_yticks([])
+                continue
+
+            # skip upper triangle if requested
+            if not include_upper and j > i:
+                ax.axis("off")
+                continue
+
+            # do the plot
+            npts = _plot_xy_on_ax(ax, x_col, y_col)
+            out_counts[(x_col, y_col)] = npts
+
+            # labels only on left column and bottom row (to reduce clutter)
+            if j == 0:
+                ax.set_ylabel(y_col, fontsize=8)
+            else:
+                ax.set_yticklabels([])
+                ax.set_ylabel("")
+            if i == n - 1:
+                ax.set_xlabel(x_col, fontsize=8)
+            else:
+                ax.set_xticklabels([])
+                ax.set_xlabel("")
+
+    plt.tight_layout()
+    if save_path:
+        fig.savefig(save_path, dpi=300, bbox_inches="tight")
+    plt.show()
+
+    return out_counts
