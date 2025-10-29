@@ -46,7 +46,13 @@ texts = ["This is a political caption.",
          "This is a caption about travel.",
          "This is a caption about health.",
          "This is a caption about education.",
-         "This is a caption about environment."]
+         "This is a caption about environment.",
+         "When the right woman comes along, I'll know it.",
+         "Anyone who steps on me is out!",
+         "Guess I should have jumped from a few floors higher.",
+         "Does this suit make me look flat?",
+         "I used to lie in the gutter, but then I quit drinking.",
+         "If you can meditate here, you can meditate anywhere."]
 
 emb_model = SentenceTransformer("all-MiniLM-L6-v2")
 print("Debug 1")
