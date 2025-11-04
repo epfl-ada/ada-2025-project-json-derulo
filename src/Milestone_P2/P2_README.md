@@ -2,35 +2,45 @@
 
 ## Abstract & Project proposal
 
-"A day without laughter is a day wasted"- Charlie Chaplin
-Humour is one of the most complex forms of human communication and it can be easily be very subjective and  deeply influenced by culture and context. In this project, we will try to find out if humour can be measured and quatified using the New Yorker caption contest dataset. The contest consists of an uncaptioned cartoon published every week solliciting online readers to caption them. The dataset consists of the cartoons, captions, and ratings for each contest from 510 to 895. In our project, we will try to find the secret recipe for a funny joke, analyzing the semantics and structures of the funniest captions and dig deeper into the themes that make a joke "funny".
+_"A day without laughter is a day wasted"_ - Charlie Chaplin
 
+Each week, the NewYorker magazine provides an original cartoon, with a missing caption. Readers are thus invited to not only caption that week's contest, but also to help find out which is the funniest caption for the previous week's image. In the given dataset, each contest is composed of a cartoon, captions and rating, ranging from number 510 to 895.
+
+As a group, we have decided to deeply dive into the NewYorker's dataset, which give us great insight into humour, one of the most complex forms of human communication. In this project, we will try to scientifically quantify one of the most subjective and culturally rooted, but also universally shared, expression of human emotion : laughter. By diving deeply into this data's analysis, we aim to discover patterns, structures, and other subtleties that make something "funny". 
 
 ---
 
 ## Research Questions
+Based on th objectives presented in the abstract, we aim to tackle the following concrete questions : 
+
 1. Theme analysis:
 
- a) What themes have a tendency to be ranked better?
- b)How theme relationships work between image and their text prompt (one way, or two-way)
+ a) What themes have a tendency to be ranked better ?
+ 
+ b) How theme relationships work between image and their text prompt (one way, or two-way) ?
 
 2. Structural analysis: 
 
- a)Keep it short and simple: Are shorter jokes funnier
- b)Are jokes with specific punctuation, rythms, etc.. more effective?
+ a) Keep it short and simple: Are shorter jokes actually funnier ?
+ 
+ b) Are jokes with specific punctuation and rythms more effective ?
 
 3. Semantic analysis:
 
- a)What type of jokes over or underperform?
- b)Can we catagorize the jokes according to their humour type ?(dark humor, irony, social commentary, wordplay, absurdity … )
+ a) What type of jokes over or underperform ? More specifically, which of the following categories perform best : dark humor, irony, social commentary, wordplay or absurdity ?
+ 
+ ~~b) Can we categorize the jokes according to their humour type ? (dark humor, irony, social commentary, wordplay, absurdity … )~~
 
 4. Context analysis:
-How do external factors influence Humor?
+   
+a) How do external factors influence Humor ? In particular, can we link trends found in the datset to societal landmarks ? 
+
 
 ---
 
 ## Proposed Additional Datasets
-
+At first, we though about enriching our dataset with som event-based data in order to conduct some form of contextual analysis. In particular, we thought about using the GDELT dataset 
+In our to answer out last research question, we have started to namely look into 
  The GDELT Events dataset corresponding to the years covered by the New Yorker Caption Contest. This will allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions
 
 ## Methods
