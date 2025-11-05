@@ -1,9 +1,3 @@
-# This file contains all the relevant functions used in the 'Milestone_P2.ipynb' file for the structural analysis.
-
-## STRUCTURAL ANALYSIS FUNCTION
-
-#### Necessary libraries
-import json
 import pandas as pd
 import os
 from datetime import datetime, timedelta
@@ -81,8 +75,8 @@ def check_votes(json_df, folder):
 
 #Part 2.2 : Data Enrichment:
 
-def update_metadata_from_csv_1(df, folder):
-     """
+def update_metadata_from_csv(df, folder):
+    """
     Goes through all contests in json_df ,
     adds 'num_captions' and 'num_votes' to missing metadata
 
@@ -91,8 +85,7 @@ def update_metadata_from_csv_1(df, folder):
                 csv_folder (str): Path to the folder containing CSV files
     
     Returns a DataFrame with the added metadata.
-    """
-     
+    """    
     for i, row in df.iterrows():
         # Ensure metadata is a dict
         meta = row.get("metadata")
@@ -133,7 +126,7 @@ def update_metadata_from_csv_1(df, folder):
 
 # =============================================================================
 
-def add_contest_dates(enriched_df):
+def add_contest_dates(df):
     """
     Adds contest_day_publish and contest_day_votes to each row's metadata.
     Uses contest 510 as base (22 Feb 2016).
@@ -152,5 +145,5 @@ def add_contest_dates(enriched_df):
         df['metadata'].iloc[i]['contest_day_publish'] = contest_day_publish
         df['metadata'].iloc[i]['contest_day_votes'] = contest_day_publish + timedelta(days=7)
 
-    return enriched_df
+    return df
 
