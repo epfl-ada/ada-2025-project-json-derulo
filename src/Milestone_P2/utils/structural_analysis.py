@@ -2,27 +2,22 @@
 
 ## STRUCTURAL ANALYSIS FUNCTION
 
-#### Necessary libraries
 import pandas as pd
-from ipywidgets import interact, IntSlider
-from IPython.display import display, Markdown, Image
 from pathlib import Path
-import string
 import re
-import contractions
 import seaborn as sns
-import scipy
-import utils.structural_analysis as ut
-from scipy.stats import pearsonr, spearmanr, ttest_ind, mannwhitneyu 
-import sys 
+import matplotlib.pyplot as plt
 from collections import Counter
 import nltk
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import TfidfVectorizer
-import seaborn as sns
-from scipy.stats import pearsonr, spearmanr
-import matplotlib.pyplot as plt
-
+# import string
+# import contractions
+# from ipywidgets import interact, IntSlider
+# from IPython.display import display, Markdown, Image
+# import scipy
+# import utils.structural_analysis as ut
+# from scipy.stats import pearsonr, spearmanr, ttest_ind, mannwhitneyu 
+# import sys 
 # from sklearn.feature_extraction.text import TfidfVectorizer
 
 ### Function to fetch csv files (being able to choose which one/how many to analyse)
