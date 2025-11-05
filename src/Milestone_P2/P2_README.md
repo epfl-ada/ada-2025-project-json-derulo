@@ -66,8 +66,7 @@ We also handled all the missing data. Namely, contest 525 and 540 are missing. W
 1. Theme Analysis
 
   a) What themes have a tendency to be ranked better ? 
-   theme extractor, 
-   wikipedia links
+
  b) How theme relationships work between image and their text prompt (one way, or two-way) ?
 
 
@@ -108,37 +107,33 @@ This question was meant to be answered using an additional dataset, the GDELT on
 ---
 
 ## Proposed Timeline 
-- Until P2 (November 5th) :
-- November 10th - November 16th :
-- November 17th  - November 23rd :
-- November 24th - November 30th :
-- December 1st - December 7th :
-- December 8th - December 14th : 
-- December 15th - December 17th :
+- **Until P2 (November 5th) :** This time was spent settig up of our Github page, understanding, but also pre-processing and cleaning our data. We have also performed preliminary analysis as well as looked into enriching our data. 
+- **November 10th - November 16th :** We will be refining our research question. What exactly is feasible ? 
+- **November 17th  - November 23rd :** We will be exploring and diving deeper into our refinedresearch questions, identifying key patterns and trends.
+- **November 24th - November 30th :** We will be finalizing our analysis, or at least have rough figures.
+-** December 1st - December 7th :** We will be finalizing our analysis.
+-** December 8th - December 14th :** We will start to create our website. The goal is to combine our findings into interactive maps which work with a coherent and engaging datastory. 
+- **December 15th - December 17th :** This corresponds to the P3 deadline. By this time, we should only have relatively small changes to do. Mostly, cleaning up the latest bugs and correcting what needs to be fixed after meeting with our TA.  
 
-  
-- **Week 1 (Project Setup):** Confirm datasets, set up GitHub repo, assign roles.  
-- **Week 2 (Data Acquisition):** Fetch the csv and json files and supplementary datasets; begin cleaning and preprocessing.  
-- **Week 3 (EDA & Preliminary Visualizations):** Explore patterns, identify initial trends, refine research questions.  
-- **Week 4 (Model Development):** Exploring the overall dataset and dig deeper into individual captions to understand better the patterns.
-- **Week 5 (Integration & Visualization):** Combine findings into interactive dashboards/maps.  
-- **Week 6 (Polish & Storytelling):** Refine analysis, finalize narrative, prepare presentation.  
+We also have a specific time-slot which we have alloted every week in order to give each other feedback as well as keep up with what the others are doing. Our weekly meeting takes place every wednesdays from 10 until 12.
 
 ---
 
 ## Organization within the Team 
 
-All team members : Data Acquisition and Cleaning (P1) :  We proposed individual problematics for the P1. We then analyzed all the ideas and picked the best ones and found a storytelling that merges them all. 
+- All team members : Data Acquisition and Cleaning (P1) :  We proposed individual problematics for the P1. We then analyzed all the ideas and picked the best ones and found a storytelling that merges them all. 
 
-- **EDA & Research Questions Refinement (Milestone P2):** Cross-team effort  
-(cest mariem, on garde cette partie ? )
-- **Modeling & Analysis (Milestone P3):** Team Member C (lead), supported by Member A.  
-- **Visualization & Communication:** Cross-team effort, coordinated by Member D.  
-- **Documentation & Deliverables:** Shared responsibility, with Member D ensuring consistency and quality.  
+- Marina and Jeremy : These members are in charge of semantics and theme analysis. They not only found out tools but also different libraries which can be used in order to further analyze this part.
+
+- Hanna looked into the GDELT dataset. This includes browsing the website, looking into ehat each index means, as well as visualizing the data. This was also supported by Mariem and Jeremy.
+  
+- Adrian
+
+- Mariem
+
 
 ---
 
 ## Questions for TAs (Optional)
-1. Can we have a custom conda environment ?
-3. Are the proposed research questions relevant ?
-4. use wikipedia links, entitied to JSON --> pas eu el temps mais pourrait être utile pour le theme analysis
+1. We would want to also incorporate the wikipedia links, which can be in the contests.json file, to our semantics analysis. The goal is to find recurring themes. Would that be feasible ? 
+4. We will slowly start looking into website design. We have mostly heard of Jerkyll.
