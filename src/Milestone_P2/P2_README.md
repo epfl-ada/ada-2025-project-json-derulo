@@ -8,12 +8,12 @@ Each week, the NewYorker magazine provides an original cartoon, with a missing c
 
 In recent years, meme culture, and internet culture overall, has consistently prioritized shorter, and trending jokes. Tweets, TikToks, and even indirectly related formats, are tending to become shorter and have visual support. This is one of the many factors that could define how an image supported joke lands.
 
-In this project, we have decided to dive into the NewYorker's dataset, which will give us great insights into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, context and other subtleties that make something "funny".
+In this project, we have decided to dive into the NewYorker's caption contest dataset, which will give us great insights into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, context and other subtleties that make something "funny".
 
 ---
 
 ## Research Questions
-Based on th objectives presented in the abstract, we aim to tackle the following concrete questions : 
+Based on the objectives presented in the abstract, we aim to tackle the following concrete questions : 
 
 1. Theme analysis:<br>
    1.a) What themes have a tendency to be ranked better ?<br>
