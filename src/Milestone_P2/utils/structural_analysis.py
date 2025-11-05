@@ -1,23 +1,24 @@
-# This file contains all the relevant functions used in the 'Milestone_P2.ipynb' file.
+# This file contains all the relevant functions used in the 'Milestone_P2.ipynb' file for the structural analysis.
 
 ## STRUCTURAL ANALYSIS FUNCTION
 
 #### Necessary libraries
-import pandas as pd
-from ipywidgets import interact, IntSlider
-from IPython.display import display, Markdown, Image
-from pathlib import Path
-import string
 import re
-import contractions
-import seaborn as sns
-import scipy
-from scipy.stats import pearsonr, spearmanr, ttest_ind, pearsonr, mannwhitneyu
-import sys 
+import pandas as pd
+from pathlib import Path
 from collections import Counter
 import nltk
 from nltk.corpus import stopwords
-from sklearn.feature_extraction.text import TfidfVectorizer
+# import sys 
+# import string
+# import contractions
+# import seaborn as sns
+# from ipywidgets import interact, IntSlider
+# from IPython.display import display, Markdown, Image
+# import scipy
+# from scipy.stats import pearsonr, spearmanr, ttest_ind, pearsonr, mannwhitneyu
+
+# from sklearn.feature_extraction.text import TfidfVectorizer
 
 ### Function to fetch csv files (being able to choose which one/how many to analyse)
 
