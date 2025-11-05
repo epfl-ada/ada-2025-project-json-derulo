@@ -4,36 +4,32 @@
 
 _"A day without laughter is a day wasted"_ - Charlie Chaplin
 
-Each week, the NewYorker magazine provides an original cartoon, with a missing caption. Readers are thus invited to not only caption that week's contest, but also rate the previous week's image.
+Each week, the NewYorker magazine provides an original cartoon, with a missing caption. Readers are thus invited to not only caption that week's contest, but also rate the previous week's image. 
 
-In this project, we have decided to deeply dive into the NewYorker's dataset, which give us great insight into humour, one of the most complex forms of human communication. In this project, we will try to scientifically quantify one of the most subjective and culturally rooted, but also universally shared, expression of human emotion : laughter. By diving deeply into this data's analysis, we aim to discover patterns, structures, and other subtleties that make something "funny". 
+In recent years, meme culture, and internet culture overall, has consistently prioritized shorter, and trending jokes. Tweets, TikToks, and even indirectly related formats, are tending to become shorter and have visual support. This is one of the many factors that could define how an image supported joke lands.
+
+In this project, we have decided to dive into the NewYorker's dataset, which will give us great insights into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, context and other subtleties that make something "funny".
 
 ---
 
 ## Research Questions
 Based on th objectives presented in the abstract, we aim to tackle the following concrete questions : 
 
-1. Theme analysis:
+1. Theme analysis:<br>
+   1.a) What themes have a tendency to be ranked better ?<br>
+   1.b) How theme relationships work between image and their text prompt (one way, or two-way) ?
 
- a) What themes have a tendency to be ranked better ?
- 
- b) How theme relationships work between image and their text prompt (one way, or two-way) ?
+2. Structural analysis: <br>
+   2.a) Keep it short and simple: Are shorter jokes actually funnier ?<br>
+   2.b) Are jokes with specific punctuation and rythms more effective ?
 
-2. Structural analysis: 
+3. Semantic analysis:<br>
+   3.a) What type of jokes over or underperform ? More specifically, which of the following categories perform best : dark humor, irony, social commentary, wordplay or absurdity ?
 
- a) Keep it short and simple: Are shorter jokes actually funnier ?
- 
- b) Are jokes with specific punctuation and rythms more effective ?
+4. Context analysis:<br>
+   4.a) How do external factors influence Humor ? In particular, can we link trends found in the dataset to societal landmarks ?
 
-3. Semantic analysis:
-
- a) What type of jokes over or underperform ? More specifically, which of the following categories perform best : dark humor, irony, social commentary, wordplay or absurdity ?
-
-
-4. Context analysis:
-   
-a) How do external factors influence Humor ? In particular, can we link trends found in the dataset to societal landmarks ? 
-
+<!-- Mettre une funiness analysis for images => justifier pourquoi certaine images ou + ou - de votes que d'autres. -->
 
 ---
 
@@ -43,8 +39,8 @@ The GDELT project is a large open database of human society, for the past 215 ye
 
 In order to answer out last research question, we have started to namely look into 
 
- [The GDELT Events dataset] is available at https://www.gdeltproject.org.
-We believed this would allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions.
+**The GDELT Events dataset** is available at [this link](https://www.gdeltproject.org).
+We believed this would allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We wanted to use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone. 
 There are 17 features in the dataset, here are some relevant ones
 
 | **Features** | **Description** |
@@ -54,35 +50,37 @@ There are 17 features in the dataset, here are some relevant ones
 | QuadClass| Simpllified categories of events based on their type of interaction|
 | Goldstein | A numeric score assigned to each event to measure its impact on political stability |
 
-However, after diving deeply into the website and available data, we not only found out that the data size was unmanageable (one month = 2GB of data), but also that we did not have access to Google Quiery, which was the most optimized way to access the data. It would also require an extensive amount of data wrangling to extract relevant information from the GDELT dataset. 
+However, after diving deeply into the website and available data, we not only found out that the data size was unmanageable (one month = 2GB of data), but also that we did not have access to Google Quiery, which was the most optimized way to access the data. It would also require an extensive amount of data wrangling to extract relevant information from the GDELT dataset which would not be realistic considering the other tasks we aim to tackle.
 This could have become a whole project, which could have been really interesting to only based on this data augmentation. It would have required us to only focus on this questions and disregard everything else which was mentioned above. For this reason, we chose to solely focus on the other research questions.
+
+Although we do not have additional datasets, we are still enriching our data with some augmentation methods explained below.
 
 
 ## Methods
-We started with preprocessing. merged files. 
-All methods started with the same root : pre-procesing and data-cleaning. We tried to merge all csv's,but came to the conclusion that it was not useful. 
-We also handled all the missing data. Namely, contest 525 and 540 are missing. We are also missing some image descriptions (from 764 until the end) which we chose to generate via ChatGPT after discussion with our TA. 
+<!-- We started with preprocessing. merged files.  -->
+ All methods started with the same root : pre-procesing and data-cleaning. <!--We tried to merge all csv's, but came to the conclusion that it was not useful. -->
+We also handled all the missing data. Namely, contest 525 and 540 are not included into the dataset. It also lacks image descriptions from contest id 764 until the end - id 895 which we suplemented by LLM augmentation via Ollama.
 
-1. Theme Analysis
+After these pre-processing steps, here are the respective methods used to tackle our research questions (please refer to section [Research Questions](#research-questions)).
 
-  a) What themes have a tendency to be ranked better ? 
+1. Theme Analysis<br>
+   1.a) What themes have a tendency to be ranked better ? <br>
 
- b) How theme relationships work between image and their text prompt (one way, or two-way) ?
+   To extract themes from captions and image decriptions, we will use the _Bidirectional Encoder Representations from Transformers_ or _BERT_ which is an extensively trained NLP by Google. More specifically, we are going to take advantage of the _BERTopic_
 
+   1.b) How theme relationships work between image and their text prompt (one way, or two-way) ?
 
-2. Structural Analysis
+2. Structural Analysis <br>
+   2.a) Keep it short and simple: Are shorter jokes actually funnier ?<br>
+   2.b) Are jokes with specific punctuation and rythms more effective ?
    
-   a) Keep it short and simple: Are shorter jokes actually funnier ?
+3. Semantic Analysis <br>
+   3.a) What type of jokes over or underperform ? More specifically, which of the following categories perform best : dark humor, irony, social commentary, wordplay or absurdity ?
    
-   b) Are jokes with specific punctuation and rythms more effective ?
-   
-4. Semantic Analysis
-   
-   a) What type of jokes over or underperform ? More specifically, which of the following categories perform best : dark humor, irony, social commentary, wordplay or absurdity ?
-   
-6. Context Analysis
-   
-a) How do external factors influence Humor ? In particular, can we link trends found in the dataset to societal landmarks ? 
+4. Context Analysis<br>
+   4.a) How do external factors influence Humor ? In particular, can we link trends found in the dataset to societal landmarks ? 
+
+<!-- Mettre une funiness analysis for images => justifier pourquoi certaine images ou + ou - de votes que d'autres. -->
 
 This question was meant to be answered using an additional dataset, the GDELT one. However, upon navigating not only their Website interface but also their dataset, we have realized that, although it does give insight into relevant societal landmarks (such as armed conflicts, protests etc), it is way too big to be properly processed. 
 
