@@ -4,9 +4,9 @@
 
 _"A day without laughter is a day wasted"_ - Charlie Chaplin
 
-Every week, the NewYorker magazine provides an original cartoon with a missing caption, inviting readers to assign a caption to it and to rate the previous week's caption propositions. 
+Every week, the NewYorker magazine provides a cartoon with a missing caption, inviting readers to assign a caption and to rate the previous week's captions. 
 
-In recent years, the Internet culture has consistently prioritized shorter and trending jokes: Tweets and TikToks are becoming shorter, using primarily visual support, redefining the influence of images on jokes.
+In recent years, the Internet culture has prioritized shorter and trending jokes: Tweets and TikToks are becoming shorter, using primarily visual support, redefining the influence of images on jokes.
 
 In this project, we are diving into the NewYorker's dataset, which will give us insight into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, context and other subtleties that make something "funny".
 
@@ -24,7 +24,7 @@ We aim to tackle the following questions:
    2.b) Are jokes with specific punctuation, vocabulary and rythm more effective?
 
 3. Semantic analysis:<br>
-   3.a) What type of jokes over or underperform ? Which of these categories perform best: dark humor, irony, social commentary, wordplay or absurdity?
+   3.a)Which of these categories of types of jokes perform best: dark humor, irony, social commentary, wordplay or absurdity?
 
 4. Context analysis: [dropped reasearch question]<br>
    4.a) How do external factors influence humor? Can we link trends in the dataset to societal landmarks?
@@ -36,7 +36,7 @@ We aim to tackle the following questions:
 ## Proposed Additional Datasets
 At first, we thought about enriching our dataset with event-based data to conduct the contextual analysis exposed above by using the [GDELT dataset](https://www.gdeltproject.org). 
 
-The GDELT project is a large open database of human society, from the past 215 years, and it is composed of 17 features. Here are the most relevant ones to us:
+The GDELT project is a large open database of human society and it is composed of 17 features. Here are the most relevant ones to us:
 
 | **Features** | **Description** |
 |-----------|--------------|
@@ -45,11 +45,11 @@ The GDELT project is a large open database of human society, from the past 215 y
 | _QuadClass_| Simplified categories of events based on their type of interaction (e.g. 'protests', 'policy change', …)|
 | _Goldstein_ | Numeric score assigned to each event for its impact on political stability |
 
-We believed this would allow us to explore how real-world events and public sentiment during those years may have influenced the themes and tone of humor in the contests.
+We believed this would allow us to explore how real-world events during those years may have influenced the themes and tone of humor in the contests.
 
-However, we found that the data size was unmanageable (one month of data = 2GB), and it would also require an extensive amount of data wrangling which would not be realistic considering the other tasks we aim to tackle. We chose to solely focus on the other research questions.
+However, we found that the data size was unmanageable (one month of data = 2GB), and it would also require an extensive amount of data wrangling which would not be realistic. We chose to solely focus on the other research questions.
 
-Although we do not have additional datasets, we are enriching our data through augmentation methods explained below.
+Although we do not have additional datasets, we are enriching our data through augmentation methods.
 
 
 ## Methods
@@ -69,7 +69,7 @@ Here are the methods used for our [research qestions](#research-questions):
    - images descriptions are processed all at once, allowing them to cluster with each other independently from the captions.
    - captions are processed for each contest internally and the themes extracted once at a time.
    
-   This allows us to analyse and discuss behaviours inside each contest and to part the computation. For a general analysis across ALL the captions, we will do additional clustering to group back all the intermidiate contest-wise results.
+   This allows us to analyse behaviours inside each contest and to part the computation. For a general analysis across ALL the captions, we will do additional clustering to group back all the intermidiate contest-wise results.
 
    To assess whether image and caption themes are statistically associated, we will do a contingency table of their co-occurrences and apply chi-square test or pointwise mutual information (PMI/NPMI) to identify theme pairs that occur more or less often.
 
@@ -85,15 +85,13 @@ Here are the methods used for our [research qestions](#research-questions):
    Performance is measured using the mean metric provided, which accounts for the number of votes and the funniness-score of the proposal.
 
    The main steps are:
-   - Categorize the jokes into five humor types (dark humor, irony, social commentary, wordplay, absurdity) based on the framework from deceptive humor
-   - Compute average performance score for each category.
+   - Categorize the jokes into five humor types based on the framework from deceptive humor
    - Statistically test differences in performance between categories using methods like one-way ANOVA.
 
 
 - **Data Collection & Cleaning:** 
- - Preprocessing and calculations to associate a date to the contest.
- - Merging all the csv's in one with caption numbers.
- - Handling missing data like missing contests (525 and 540), missing image descriptions (from 764), missimg contest dates
+ - Handling missing data
+ - Data enrichment
   
 - **Exploratory Data Analysis (EDA):** 
  - Visualization through all contests
@@ -113,29 +111,28 @@ Here are the methods used for our [research qestions](#research-questions):
 ## Proposed Timeline 
 - **Until P2 (November 5th):** settig up of our Github page, understanding, pre-processing and cleaning our data. We have also performed preliminary analysis and looked into enriching our data. 
 - **November 10th - November 16th:** refining our research question: what exactly is feasible? 
-- **November 17th  - November 23rd:** diving deeper into our refined research questions, identifying key patterns and trends.
-- **November 24th - November 30th:** finalizing our analysis, or have rough figures.
+- **November 17th  - November 23rd:** diving deeper into our research questions, identifying key patterns and trends.
+- **November 24th - November 30th:** rough visualization.
 - **December 1st - December 7th:** finalization of our analysis.
 - **December 8th - December 14th:** creation of our website. 
-- **December 15th - December 17th:** cleaning up the latest bugs and correcting what needs to be fixed.
+- **December 15th - December 17th:** cleaning up the latest bugs.
 
-We have a weekly meetings together for feedback and to keep up with what the others are doing. 
+We also have a weekly meeting. 
 
 ## Organization within the Team 
 
-- All team members: data acquisition and cleaning (P1) and proposition of individual problematics: we then picked the best ideas and found a storytelling that merges them. 
+- All team members: data acquisition and cleaning (P1) and proposition of individual problematics. 
 
-- Marina and Jeremy: in charge of semantics and theme analysis, finding tools and different libraries which can be used further analysis.
+- Marina and Jeremy: semantics and theme analysis, finding tools and different libraries.
 
-- Hanna: looked into the GDELT dataset: browsing the website, looking into what each index means, and data visualisation. This was supported by Mariem and Jeremy.
+- Hanna:GDELT dataset exploration and data visualisation. This was supported by Mariem and Jeremy.
   
 - Adrian: extensive sanity check, adding missing metadata to json file.
 
-- Mariem: data enrichment, preprocessing and merging: includes doing a sanity check of the json_file metadata and adding the missing dates, num_captions and num_votes on the json metadata. 
-
+- Mariem: data enrichment, preprocessing of the json file. 
 
 ---
 
 ## Questions for TAs 
-1. We would want to also incorporate the wikipedia links, which can be in the contests.json file, to our semantics analysis. Can we feasibly find recurring themes. Would that be feasible ? 
-4. We will start looking into website design.
+1. Incorporate wikipedia links in the contests.json file for semantics analysis.
+4. Website design.
