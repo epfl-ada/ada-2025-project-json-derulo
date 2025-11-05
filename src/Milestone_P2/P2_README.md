@@ -136,7 +136,7 @@ We also have a specific time-slot which we have alloted every week in order to g
   
 - Adrian
 
-- Mariem
+- Mariem looked into data enrichment and data preprocessing. This includes doing a sanity check of the json_file metadata and adding the missing num_captions and num_votes on the json metadata and also adding the missing dates. This also refers to merging all the csv files into one big csv file. 
 
 
 ---
