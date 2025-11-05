@@ -237,7 +237,7 @@ def print_top_caption(contest_num, folder_path):
         print(f"Rank 1: '{row['caption']}' with mean score {row['mean']:.3f}")
         
 
-def plot_number_of_captions_vs_contests(folder_path):
+def plot_number_of_captions_vs_contests(folder_path,image_path):
     folder_path=str(folder_path)
     contest_counts = {} #intialise caption number at 0
     if not os.path.isdir(folder_path):
@@ -296,7 +296,7 @@ def plot_number_of_captions_vs_contests(folder_path):
     plt.grid(True)
     plt.show()
             
-def plot_and_show20(df,title):
+def plot_and_show20(df,title,image_path):
     plt.figure(figsize=(10,8))
     plt.barh(df["Contest"].astype(str), df["Num_Captions"], color='skyblue')
     plt.xlabel("Number of Captions")
@@ -305,10 +305,10 @@ def plot_and_show20(df,title):
     plt.tight_layout()
     plt.show()
     print('top 1 ' + title)
-    show_contest_image(int(df.iloc[-1]['Contest']))
+    show_contest_image(int(df.iloc[-1]['Contest']),image_path)
     
     
-def top1_means_vs_contests(folder_path):
+def top1_means_vs_contests(folder_path,image_path):
     #now print popularity between each contest similarly to first part but using mean scores instead
     top_n = 1  # number of top captions to consider
     top_mean_scores = {}
@@ -374,11 +374,11 @@ def top1_means_vs_contests(folder_path):
     plt.show()
     
     print("Contest with the best mean score on top 1 captions : ")
-    show_contest_image(int(top_mean_df.iloc[0]['Contest']))
+    show_contest_image(int(top_mean_df.iloc[0]['Contest']),image_path)
     print_top_caption(int(top_mean_df.iloc[0]['Contest']), folder_path)
     
     print("Contest with the worst mean score on top 1 captions : ")
-    show_contest_image(int(top_mean_df.iloc[-1]['Contest']))
+    show_contest_image(int(top_mean_df.iloc[-1]['Contest']),image_path)
     print_top_caption(int(top_mean_df.iloc[-1]['Contest']), folder_path)
 
 def print_top2_captions_with_delta(contest_num, folder_path):
@@ -414,7 +414,7 @@ def computing_deltas(folder_path):
             top2_delta[contest_num] = None
         return top2_delta
     
-def plot_deltas(folder_path):
+def plot_deltas(folder_path,image_path):
     margin_df = pd.DataFrame(list(computing_deltas(folder_path).items()), columns=["Contest", "Top2_Delta"])
     margin_df = margin_df.dropna()  # once again making sure our DataFrame only has real data, not sure if this is necessary
     max_contest = margin_df.loc[margin_df["Top2_Delta"].idxmax()] #Contest with the highest Delta
@@ -452,11 +452,11 @@ def plot_deltas(folder_path):
     plt.show()
     
     print("Contest with the highest delta of scores between the top 2 captions : ")
-    show_contest_image(int(max_contest['Contest']))
+    show_contest_image(int(max_contest['Contest']),image_path)
     print_top2_captions_with_delta(int(max_contest['Contest']), folder_path)
     
     print("Contest with the lowest delta of scores between the top 2 captions : ")
-    show_contest_image(int(min_contest['Contest']))
+    show_contest_image(int(min_contest['Contest']),folder_path)
     print_top2_captions_with_delta(int(min_contest['Contest']), folder_path)
     
     
