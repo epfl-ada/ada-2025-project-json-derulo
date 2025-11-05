@@ -1,9 +1,3 @@
-# This file contains all the relevant functions used in the 'Milestone_P2.ipynb' file for the structural analysis.
-
-## STRUCTURAL ANALYSIS FUNCTION
-
-#### Necessary libraries
-import json
 import pandas as pd
 import os
 from datetime import datetime, timedelta
