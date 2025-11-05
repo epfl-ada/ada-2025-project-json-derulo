@@ -125,8 +125,7 @@ We also have a weekly meeting.
 
 - Marina and Jeremy: semantics and theme analysis, finding tools and different libraries.
 
-- Hanna:GDELT dataset exploration and data visualisation. This was supported by Mariem and Jeremy.
-  
+- Hanna:GDELT dataset exploration and data visualisation. This was supported by Mariem and Jeremy. She also performed data wrangling, and will do the website design.
 - Adrian: extensive sanity check, adding missing metadata to json file.
 
 - Mariem: data enrichment, preprocessing of the json file. 
