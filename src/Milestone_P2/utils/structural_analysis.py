@@ -103,6 +103,21 @@ def analyze_with_stopwords(df, caption_column='caption', stopword_type='basic', 
     return pd.DataFrame(word_freq.most_common(top_n), 
                        columns=['word', 'frequency'])
 
+def remove_stopwords(caption, stopword_type='basic'):
+    '''erase stopwords from a single caption'''
+    if pd.isna(caption) or not isinstance(caption, str):
+        return ""
+    
+    stopword_lists = get_stopword_lists()
+    selected_stopwords = stopword_lists[stopword_type]
+
+    words = re.findall(r'\b[a-zA-Z]+\b', caption.lower())
+    if selected_stopwords:
+        words = [word for word in words if word not in selected_stopwords]
+    
+    # cleaned caption
+    return ' '.join(words)
+
 ### Function that gets most common words
 
 def get_most_common_words(text_series, n=30, remove_stopwords=True):
