@@ -8,7 +8,7 @@ Every week, the NewYorker magazine provides a cartoon with a missing caption, in
 
 In recent years, the Internet culture has prioritized shorter and trending jokes: Tweets and TikToks are becoming shorter, using primarily visual support, redefining the influence of images on jokes.
 
-In this project, we are diving into the NewYorker's dataset, which will give us insight into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, context and other subtleties that make something "funny".
+In this project, we are diving into the NewYorker's dataset, which will give us insight into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, and other subtleties that make jokes "funny".
 
 ---
 
@@ -71,7 +71,7 @@ Here are the methods used for our [research qestions](#research-questions):
    
    This allows us to analyse behaviours inside each contest and to part the computation. For a general analysis across ALL the captions, we will do additional clustering to group back all the intermidiate contest-wise results.
 
-   To assess whether image and caption themes are statistically associated, we will do a contingency table of their co-occurrences and apply chi-square test or pointwise mutual information (PMI/NPMI) to identify theme pairs that occur more or less often.
+   To assess whether image and caption themes are statistically associated, we will apply chi-square test or pointwise mutual information (PMI/NPMI) to identify theme pairs that occur more or less often.
 
 
 2. Structural Analysis <br>
@@ -81,7 +81,7 @@ Here are the methods used for our [research qestions](#research-questions):
    
 
 3. Semantic Analysis <br>
-   Aim: quantitatively compare the performance of jokes across humor categories.
+   Aim: compare the performance of jokes across humor categories.
    Performance is measured using the mean metric provided, which accounts for the number of votes and the funniness-score of the proposal.
 
    The main steps are:
@@ -109,9 +109,9 @@ Here are the methods used for our [research qestions](#research-questions):
 ---
 
 ## Proposed Timeline 
-- **Until P2 (November 5th):** settig up of our Github page, understanding, pre-processing and cleaning our data. We have also performed preliminary analysis and looked into enriching our data. 
-- **November 10th - November 16th:** refining our research question: what exactly is feasible? 
-- **November 17th  - November 23rd:** diving deeper into our research questions, identifying key patterns and trends.
+- **Until P2 (November 5th):** Understanding, pre-processing data. Preliminary analysis and data enrichment. 
+- **November 10th - November 16th:** looking into feasability 
+- **November 17th  - November 23rd:** Identifying key patterns and trends.
 - **November 24th - November 30th:** rough visualization.
 - **December 1st - December 7th:** finalization of our analysis.
 - **December 8th - December 14th:** creation of our website. 
@@ -134,5 +134,5 @@ We also have a weekly meeting.
 ---
 
 ## Questions for TAs 
-1. Incorporate wikipedia links in the contests.json file for semantics analysis.
+1. Incorporate wikipedia links in the json file for semantics analysis.
 4. Website design.
