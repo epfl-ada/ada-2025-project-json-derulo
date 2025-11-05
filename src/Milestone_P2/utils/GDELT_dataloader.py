@@ -4,6 +4,8 @@ import datetime
 import zipfile
 from time import sleep
 
+# This file was made with the help of ChatGPT-o5.
+
 BASE_URL = "http://data.gdeltproject.org/events"
 OUT_DIR = "/Users/jeremyserillon/Downloads/test"
 START_DATE = datetime.date(2016, 1, 1)

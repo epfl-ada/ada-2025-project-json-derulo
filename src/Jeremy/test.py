@@ -1,3 +1,7 @@
+# This file implements a test of BERTopic on a small set of sample texts. The goal is to obtain 
+# a cluster of themes from the sample. The more samples => the most reliable the topics clustering
+# should be.
+
 # General
 import os
 
@@ -5,8 +9,8 @@ import os
 import json
 import pandas as pd
 
-# Visualization
-from visualization import plot_df_histogram, plot_df_two_class, plot_df_pairgrid
+# # Visualization
+# from visualization import plot_df_histogram, plot_df_two_class, plot_df_pairgrid
 
 # Themes extraction
 from sentence_transformers import SentenceTransformer
@@ -55,19 +59,21 @@ texts = ["This is a political caption.",
          "If you can meditate here, you can meditate anywhere."]
 
 emb_model = SentenceTransformer("all-MiniLM-L6-v2")
-print("Debug 1")
-# BERTopic (tiny-corpus friendly)
+# print("Debug 1")
+
 topic_model = BERTopic(
-    embedding_model=emb_model,          # <-- provide embedding model
+    embedding_model=emb_model,          # embedding model
     representation_model=KeyBERTInspired(),
-    min_topic_size=2,                   # small dataset
+    min_topic_size=2,                   # we can change this depending on dataset size: small
     nr_topics=None,                     # avoid brittle topic reduction on tiny data
     verbose=True
 )
-print("Debug 2")
-# Fit (let BERTopic compute embeddings internally)
+# print("Debug 2")
+
+# Fit (internal embedding computation)
 topics, probs = topic_model.fit_transform(texts)
-print("Debug 3")
+# print("Debug 3")
+
 # Labels
 labels = topic_model.get_topic_info()[["Topic", "Name", "Count"]]
 print(labels)
@@ -75,8 +81,6 @@ print(labels)
 
 # OUTPUT:
 # ================================================================================================ #
-# Debug 1
-# Debug 2
 # 2025-10-25 02:10:57,242 - BERTopic - Embedding - Transforming documents to embeddings.
 # Batches: 100%|████████████████████████████████████████████████████| 1/1 [00:00<00:00,  1.23it/s]
 # 2025-10-25 02:10:58,076 - BERTopic - Embedding - Completed ✓
@@ -87,7 +91,6 @@ print(labels)
 # 2025-10-25 02:11:00,471 - BERTopic - Cluster - Completed ✓
 # 2025-10-25 02:11:00,472 - BERTopic - Representation - Fine-tuning topics using representation models.
 # 2025-10-25 02:11:01,007 - BERTopic - Representation - Completed ✓
-# Debug 3
 #    Topic                                    Name  Count
 # 0     -1  -1_caption_animals_education_political      5
 # 1      0            0_caption_health_food_sports      3
