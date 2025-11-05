@@ -3,20 +3,25 @@
 ## STRUCTURAL ANALYSIS FUNCTION
 
 #### Necessary libraries
-import re
 import pandas as pd
+from ipywidgets import interact, IntSlider
+from IPython.display import display, Markdown, Image
 from pathlib import Path
+import string
+import re
+import contractions
+import seaborn as sns
+import scipy
+import utils.structural_analysis as ut
+from scipy.stats import pearsonr, spearmanr, ttest_ind, mannwhitneyu 
+import sys 
 from collections import Counter
 import nltk
 from nltk.corpus import stopwords
-# import sys 
-# import string
-# import contractions
-# import seaborn as sns
-# from ipywidgets import interact, IntSlider
-# from IPython.display import display, Markdown, Image
-# import scipy
-# from scipy.stats import pearsonr, spearmanr, ttest_ind, pearsonr, mannwhitneyu
+from sklearn.feature_extraction.text import TfidfVectorizer
+import seaborn as sns
+from scipy.stats import pearsonr, spearmanr
+import matplotlib.pyplot as plt
 
 # from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -178,3 +183,67 @@ def calculate_vocabulary_richness(text_series, remove_stopwords=True):
         })
     
     return pd.DataFrame(results)
+
+## Plotting function for TTR
+
+def plot_linguistic_metrics(df, top_captions, bottom_captions, corr_ttr, corr_unique, 
+                           metrics=['ttr', 'unique_words'], 
+                           performance_group_col='performance_group',
+                           success_metric_col='success_metric'):
+    
+    # scatter plots and boxplot
+    plt.figure(figsize=(15, 5))
+    
+            # scatter plots for each metric
+    for i, metric in enumerate(metrics, 1):
+        plt.subplot(1, 3, i)
+        sns.scatterplot(data=df, x=metric, y=success_metric_col, alpha=0.6)
+        
+        corr = corr_ttr if metric == 'ttr' else corr_unique
+        metric_name = 'TTR' if metric == 'ttr' else 'Unique Words'
+        
+        plt.title(f'{metric_name} vs Funny Score\n(r: {corr:.3f})')
+        plt.xlabel(metric_name)
+        plt.ylabel('Funny Score')
+    
+            # boxplot for TTR / performance group
+    plt.subplot(1, 3, 3)
+    sns.boxplot(data=df, x=performance_group_col, y='ttr')
+    plt.title('TTR by Performance Group')
+    plt.xlabel('Performance Group')
+    plt.ylabel('Type-Token Ratio')
+    
+    plt.tight_layout()
+    plt.show()
+    
+    # TTR distribution and examples
+    plt.figure(figsize=(12, 4))
+    
+    # TTR distribution
+    plt.subplot(1, 2, 1)
+    sns.histplot(data=top_captions, x='ttr', bins=20, alpha=0.7, label='Top Performers', color='green')
+    sns.histplot(data=bottom_captions, x='ttr', bins=20, alpha=0.7, label='Bottom Performers', color='red')
+    plt.title('TTR Distribution: Top vs Bottom Performers')
+    plt.xlabel('Type-Token Ratio')
+    plt.ylabel('Frequency')
+    plt.legend()
+    
+    # High vs Low TTR examples
+    plt.subplot(1, 2, 2)
+    high_ttr_captions = df.nlargest(5, 'ttr')[['caption', 'ttr', success_metric_col]]
+    low_ttr_captions = df.nsmallest(5, 'ttr')[['caption', 'ttr', success_metric_col]]
+    
+    examples_df = pd.concat([
+        high_ttr_captions.assign(type='High TTR'),
+        low_ttr_captions.assign(type='Low TTR')
+    ])
+    
+    sns.scatterplot(data=examples_df, x='ttr', y=success_metric_col, hue='type', s=100)
+    plt.title('High vs Low TTR Captions\n(Extreme Examples)')
+    plt.xlabel('Type-Token Ratio')
+    plt.ylabel('Funny Score')
+    plt.legend()
+    
+    plt.tight_layout()
+    plt.show()
+
