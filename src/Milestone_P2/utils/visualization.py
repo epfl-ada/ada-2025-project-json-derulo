@@ -6,6 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 from matplotlib.collections import LineCollection
+from matplotlib.colors import ListedColormap
 
 from typing import Optional
 
@@ -15,9 +16,11 @@ from ipywidgets import IntSlider, VBox, Output
 # This file was done at LTS5 as a Semester Project by Jeremy Serillon and refined for this project
 # ---------------------------------------------------------------------------
 
+cst_cmap_purple = ListedColormap(["#500091"])   # dark purple
+
 def plot_df_histogram(
     df, class_col='Species_Common_Name', top_n=None, figsize=(10, 5),
-    title=None, cmap='viridis', log_scale=False, save_path=None,
+    title=None, cmap=cst_cmap_purple, log_scale=False, save_path=None,
     # --- tuning ---
     label_pad_linear=0.01,     # frac of max count to pad above bars for labels (linear y)
     label_pad_log=0.08,        # frac of bar height to pad above bars for labels (log y)
@@ -59,10 +62,8 @@ def plot_df_histogram(
         class_counts = class_counts.head(top_n)
 
     n = len(class_counts)
-    try:
-        cmap_obj = plt.get_cmap(cmap)
-    except Exception:
-        cmap_obj = plt.get_cmap('tab20')
+    cmap_obj = cmap
+
     colors = [cmap_obj(x) for x in np.linspace(0.0, 1.0, n)]
 
     fig, ax = plt.subplots(figsize=figsize)
@@ -148,7 +149,7 @@ def plot_df_histogram(
 #                   top_n=None,
 #                   figsize=(6,5),
 #                   title='Missing Images Distribution',
-#                   cmap='viridis',
+#                   cmap=cst_cmap_purple,
 #                   log_scale=False)
 
 
@@ -156,7 +157,7 @@ def plot_df_histogram(
 
 def plot_df_histogram_compare(
     df_train, df_balanced_train, class_col='Species_Common_Name', top_n=None,
-    figsize=(12, 5), title=None, cmap='viridis', log_scale=False, save_path=None,
+    figsize=(12, 5), title=None, cmap=cst_cmap_purple, log_scale=False, save_path=None,
     label_pad_linear=0.01, label_pad_log=0.08,
     ylim_headroom_linear=0.06, ylim_headroom_log=0.8,
     tight_layout_pad=1.1
@@ -192,8 +193,7 @@ def plot_df_histogram_compare(
     n = len(classes)
     if n == 0: raise ValueError("No classes to plot.")
 
-    try: cmap_obj = plt.get_cmap(cmap)
-    except Exception: cmap_obj = plt.get_cmap('tab20')
+    cmap_obj = cmap
     colors = [cmap_obj(x) for x in np.linspace(0.0, 1.0, n)]
 
     orig  = counts_train.values.astype(float)
@@ -250,14 +250,14 @@ def plot_df_histogram_compare(
 #                           class_col='Species_Common_Name',
 #                           top_n=None, figsize=(5,5),
 #                           title="Added or removed images to create balanced training set",
-#                           cmap='viridis', log_scale=False)
+#                           cmap=cst_cmap_purple, log_scale=False)
 
 
 # ---------------------------------------------------------------------------
 
 def visualize_species_split(
     train_data, val_data, test_data, class_col='Species_Common_Name',
-    top_n=None, figsize=(10, 5), title=None, cmap='viridis', log_scale=False, save_path=None,
+    top_n=None, figsize=(10, 5), title=None, cmap=cst_cmap_purple, log_scale=False, save_path=None,
     # tuning knobs to match your style
     label_pad_linear=0.01, label_pad_log=0.08,
     ylim_headroom_linear=0.06, ylim_headroom_log=0.8,
@@ -313,10 +313,7 @@ def visualize_species_split(
     n = len(plot_classes)
 
     # --- colors (same approach) ---------------------------------------------
-    try:
-        cmap_obj = plt.get_cmap(cmap)
-    except Exception:
-        cmap_obj = plt.get_cmap('tab20')
+    cmap_obj = cmap
     colors = [cmap_obj(x) for x in np.linspace(0.0, 1.0, max(n, 2))][:n]
 
     # --- stack data in split order ------------------------------------------
@@ -408,7 +405,7 @@ def visualize_species_split(
 #                         class_col='Species_Common_Name',
 #                         top_n=None, figsize=(5, 5),
 #                         title="Train/Val/Test Species Split",
-#                         cmap='viridis', log_scale=False)
+#                         cmap=cst_cmap_purple, log_scale=False)
 
 
 
@@ -416,7 +413,7 @@ def visualize_species_split(
 # VISUALIZATION CHAPTER 1 - Interactive visualization and classical plots
 # =============================================================================
 def plot_df_two_class(df, x_col, y_col, figsize=(12, 6),
-                      title=None, cmap='viridis', save_path=None,
+                      title=None, cmap=cst_cmap_purple, save_path=None,
                       trace: str = "lines"):
     """
     Plot x_col vs y_col with points colored by y (low -> high) using `cmap`.
@@ -452,10 +449,7 @@ def plot_df_two_class(df, x_col, y_col, figsize=(12, 6),
     y = y[order]
 
     # Colormap for points / gradient lines
-    try:
-        cmap_obj = plt.get_cmap(cmap)
-    except Exception:
-        cmap_obj = plt.get_cmap('tab20')
+    cmap_obj = cmap
     norm = plt.Normalize(vmin=np.min(y), vmax=np.max(y))
 
     fig, ax = plt.subplots(figsize=figsize)
@@ -554,7 +548,7 @@ def plot_df_pairgrid(
     df: pd.DataFrame,
     cols: list,
     trace: str = "None",              # {None/'none','lines','fit','gauss'}
-    cmap: str = "viridis",
+    cmap = cst_cmap_purple,
     figsize=(12, 12),
     include_upper: bool = False,       # plot both triangles if True; otherwise only lower
     diagonal: str = "name",            # {'name','blank'} what to show on diagonal cells
@@ -601,10 +595,7 @@ def plot_df_pairgrid(
     trace_mode = None if t in (None, "none") else t
 
     # Colormap object (fallback if invalid)
-    try:
-        cmap_obj = plt.get_cmap(cmap)
-    except Exception:
-        cmap_obj = plt.get_cmap("tab20")
+    cmap_obj = cmap
 
     n = len(cols)
     fig, axes = plt.subplots(n, n, figsize=figsize, squeeze=False)
