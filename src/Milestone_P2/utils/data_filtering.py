@@ -6,7 +6,6 @@ import re
 import pandas as pd
 
 input_folder = CSV_DIR
-clean_folder = CSV_CLEAN_DIR
 
 # ============================================================================= 
 # CHAPTER 2 - Data pre-processing & cleaning
@@ -52,15 +51,16 @@ def fix_missing_rank(file_path,file_added):
     EXPECTED_HEADERS = ["rank", "caption", "mean", "precision", "votes", "not_funny", "somewhat_funny", "funny"]
 
     MISSING_RANK_HEADERS = ["caption", "mean", "precision", "votes", "not_funny", "somewhat_funny", "funny"]
+
     # Read the CSV
     with open(file_path, "r", encoding="utf-8", newline='') as f:
         reader = csv.DictReader(f)
         for row in reader:
             try:
-                row['mean'] = float(row['mean'])  # convert mean to float for sorting
+                row['mean'] = float(row['mean'])  
                 rows.append(row)
             except ValueError:
-                continue  # skip rows with invalid mean
+                continue  
 
     # Sort rows by mean descending
     rows.sort(key=lambda x: x['mean'], reverse=True)
@@ -68,8 +68,7 @@ def fix_missing_rank(file_path,file_added):
     # Write back the CSV with rank
     with open(file_path, "w", encoding="utf-8", newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(EXPECTED_HEADERS)  # write header
-
+        writer.writerow(EXPECTED_HEADERS)  
         for i, row in enumerate(rows):
             writer.writerow([
                 i,  # rank
@@ -81,7 +80,7 @@ def fix_missing_rank(file_path,file_added):
                 row['somewhat_funny'],
                 row['funny']
             ])
-
+file_to_fix = file_added
 # Check and fix only this file
 input_path = os.path.join(input_folder, file_to_fix)
 
@@ -109,26 +108,20 @@ def check_corruption(line):
     Criteria:
       1. Line must start with a single number (rank)
       2. Line must end with a numeric value (funny score)
-      also removes blank spaces, commas etc from checking
     """
-    pattern_starts_with_one_number = re.compile(r"^\d+,")
-    pattern_numeric_end = re.compile(r"[-+]?\d*\.?\d+$")
+    pattern_starts_with_one_number = re.compile(r"^\d+,")  # should start with a single number
+    pattern_non_numeric_end = re.compile(r"[^\d.,-]$")    # should end with a number
 
     reasons = []
     stripped = line.strip()
 
-    # --- Check start ---
+    # Check start
     if not pattern_starts_with_one_number.match(stripped):
         reasons.append("does not start with single number")
 
-    # --- Check end ---
-    if stripped.endswith(',') or stripped.endswith('"') or not stripped:
-        # empty, dangling quote, or dangling comma
+    # Check end
+    if pattern_non_numeric_end.search(stripped.split(",")[-1]):
         reasons.append("ends with non-numeric value")
-    else:
-        last_field = stripped.split(",")[-1].strip()
-        if not pattern_numeric_end.match(last_field):
-            reasons.append("ends with non-numeric value")
 
     return reasons
 
@@ -138,7 +131,7 @@ def check_csv_file_for_corruption(file_num, folder_path):
     """
     Check a CSV file for corrupted lines, given its file number and folder path.
     Prints corrupted lines and a summary at the end.
-    Returns corrupted_line_numbers (list): actual 1-based file line numbers
+    Returns a list of row indices (0-based for pandas) that are corrupted.
     """
     filename = f"{file_num}.csv"
     file_path = os.path.join(folder_path, filename)
@@ -151,8 +144,7 @@ def check_csv_file_for_corruption(file_num, folder_path):
         lines = f.readlines()
 
     found_corruption = False
-    corrupted_line_numbers = []  # actual file line numbers (1-based)
-
+    corrupted_rows = []  
 
     print(f"Checking {filename} for corrupted lines...\n")
 
@@ -162,8 +154,7 @@ def check_csv_file_for_corruption(file_num, folder_path):
         reasons = check_corruption(line)
         if reasons:
             found_corruption = True
-            corrupted_line_numbers.append(line_number)
-
+            corrupted_rows.append(line_number - 2)  
             print(f"{filename}: line {line_number} -> {', '.join(reasons)}")
             print(f"  → {line.strip()[:150]}{'...' if len(line.strip()) > 150 else ''}")
 
@@ -171,12 +162,10 @@ def check_csv_file_for_corruption(file_num, folder_path):
         print(f" {filename} has no corrupted lines.\n")
     else:
         print("\n--- Summary ---")
-        print(f"Total corrupted lines: {len(corrupted_line_numbers)}")
-        print(f"Rows with corruption (file line numbers): {corrupted_line_numbers}\n")
+        print(f"Total corrupted lines: {len(corrupted_rows)}")
+        print(f"Rows with corruption: {[r+2 for r in corrupted_rows]}\n")  
 
-
-    return corrupted_line_numbers
-
+    return corrupted_rows
 
 #=============================================================================
 
@@ -187,9 +176,7 @@ def clean_csv_using_corruption(file_num, folder_path):
     Uses only the csv module, no pandas.
     """
     # Get corrupted rows (0-based for CSV reading after header)
-    corrupted_line_numbers = check_csv_file_for_corruption(file_num, folder_path)
-
-
+    corrupted_rows = check_csv_file_for_corruption(file_num, folder_path)
 
     filename = f"{file_num}.csv"
     file_path = os.path.join(folder_path, filename)
@@ -209,49 +196,15 @@ def clean_csv_using_corruption(file_num, folder_path):
     with open(file_path, "r", newline="", encoding="utf-8") as infile, \
          open(cleaned_path, "w", newline="", encoding="utf-8") as outfile:
 
-        
+        reader = csv.reader(infile)
+        writer = csv.writer(outfile)
 
-        for line_number, line in enumerate(infile, start=1):
-            if line_number == 1 or line_number not in corrupted_line_numbers:
-                outfile.write(line)
+        for row_idx, row in enumerate(reader):
+            if row_idx == 0:
+                # Always write header
+                writer.writerow(row)
+            elif (row_idx - 1) not in corrupted_rows:
+                # Only write non-corrupted rows
+                writer.writerow(row)
 
-                
-                
-    return cleaned_path, corrupted_line_numbers
-#=============================================================================
-
-def check_cleaned_csv_for_corruption(clean_folder):
-    """
-    Checks all CSV files in the cleaned folder for corruption.
-
-    This function iterates over each CSV file in `clean_folder` and uses
-    the helper function `check_csv_file_for_corruption` to detect any corrupted lines.
-    It prints a summary indicating whether all files are clean or if some contain corrupted lines.
-
-    Parameters:
-        clean_folder (str): Path to the folder containing cleaned CSV files.
-
-    Returns:
-        bool: True if all CSV files are clean (no corrupted lines), False if any files contain corruption.
-    """
-    all_clean = True  # flag to track if everything is clean
-
-    for filename in os.listdir(clean_folder):
-        if not filename.endswith(".csv"):
-            continue
-
-        # The file prefix is already file_num_cleaned
-        file_num_cleaned = filename.replace(".csv", "")
-
-        # Check corruption
-        corrupted_lines = check_csv_file_for_corruption(file_num_cleaned, clean_folder)
-        if corrupted_lines:
-            all_clean = False
-
-    # Final summary
-    if all_clean:
-        print("\n✅ All files in cleaned_input_folder are clean (no corrupted lines).")
-    else:
-        print("\n❌ Some files have corrupted lines. Check the output above for details.")
-
-    return all_clean
+    print(f"{filename}: Cleaned file saved to {cleaned_path}, removed {len(corrupted_rows)} corrupted rows.\n")
