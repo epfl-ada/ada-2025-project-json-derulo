@@ -1,6 +1,6 @@
-# Project Applied Data Analysis - Group 'group_name'
+# Project Applied Data Analysis - Group 'JSON DERULO'
 
-This repository holds the project of group **'group_name'** for the Applied Data Analysis EPFL cours.
+This repository holds the project of group **JSON DERULO** for the Applied Data Analysis EPFL cours.
 
 Group members
 - Adrián Fernández Lojo - adrian.fernandezlojo@epfl.ch
