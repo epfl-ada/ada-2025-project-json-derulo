@@ -3,26 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How to be funny, for dummies</title>
+    <title>Cartoon Caption Contest Analysis | The New Yorker Style</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <header>
-        <h1>How to be funny, for dummies</h1>
-        <p class="subtitle">A data-driven guide to cracking the New Yorker Caption Contest.<br>(Or at least, how not to fail miserably.)</p>
-        <a href="#intro" class="button">Start Laughing</a>
+        <div class="masthead">The New Yorker</div>
+        <div class="sub-masthead">Cartoon Caption Contest Analysis</div>
     </header>
 
+    <nav class="nav-tabs">
+        <a href="#intro" class="active">The Challenge</a>
+        <a href="#structure">Structure</a>
+        <a href="#vocabulary">Vocabulary</a>
+        <a href="#themes">Themes</a>
+        <a href="#conclusion">The Verdict</a>
+    </nav>
+
     <section id="intro">
-        <h2>The Challenge</h2>
+        <h1>How to Be Funny, For Dummies</h1>
+        <p class="subtitle">A data-driven guide to cracking the caption contest. (Or at least, how not to fail miserably.)</p>
+        
+        <div style="text-align: center;">
+            <a href="#structure" class="button">Start Reading</a>
+        </div>
+
+        <h2>The Premise</h2>
         <p>
-            "A day without laughter is a day wasted." - Charlie Chaplin. <br>
-            "A day analyzing 2.2 million New Yorker captions is a day... well, it's a day." - Team JSON Derulo.
+            "A day without laughter is a day wasted," Charlie Chaplin once said. We say: a day analyzing 2.2 million New Yorker captions is a day spent finding out why your joke didn't win.
         </p>
         <p>
-            We dove headfirst into the <strong>New Yorker Caption Contest dataset</strong>. That's hundreds of contests, thousands of images, and millions of people trying to be funny. 
-            We asked the big questions: What makes a caption win? Is it the length? The vocabulary? The existential dread?
+            We dove headfirst into the <strong>New Yorker Caption Contest dataset</strong>. Hundreds of contests. Thousands of images. Millions of attempts at humor. We asked the big questions: What makes a caption win? Is it brevity? Vocabulary? Existential dread?
         </p>
         <div class="highlight-box">
             We analyzed over <strong>2,292,678 captions</strong> to find the secret formula of comedy.
@@ -30,61 +42,52 @@
     </section>
 
     <section id="structure">
-        <h2>Lesson 1: Size Matters (Keep it Short)</h2>
+        <h2>Lesson 1: Brevity is the Soul of Wit</h2>
         <p>
-            You know that friend who takes 10 minutes to tell a punchline? Don't be that friend.
-        </p>
-        <p>
-            Our structural analysis revealed a groundbreaking truth: <strong>Brevity is the soul of wit.</strong>
-            Okay, Shakespeare said it first, but we have p-values to prove it (p < 0.0001, baby!).
+            You know that friend who takes ten minutes to get to the punchline? Do not be that friend. Our structural analysis revealed a groundbreaking truth: <strong>size matters, and smaller is better.</strong>
         </p>
         
         <div class="stat-container">
-            <div class="stat-bar" style="height: 103px; background-color: #2ecc71;">
+            <div class="stat-bar-group">
                 <span class="stat-value">10.3</span>
-                <span class="stat-label">Top 20% (Funny)</span>
+                <div class="stat-bar" style="height: 103px;"></div>
+                <span class="stat-label">Top 20%<br>(Funny)</span>
             </div>
-            <div class="stat-bar" style="height: 110px; background-color: #e74c3c;">
+            <div class="stat-bar-group">
                 <span class="stat-value">11.0</span>
-                <span class="stat-label">Bottom 20% (Not Funny)</span>
+                <div class="stat-bar short" style="height: 110px;"></div>
+                <span class="stat-label">Bottom 20%<br>(Not Funny)</span>
             </div>
         </div>
-        <p style="text-align: center; font-size: 0.9rem;"><em>Average Word Count</em></p>
+        <p style="text-align: center; font-family: var(--font-ui); font-size: 0.8rem; margin-top: -20px;"><em>Average Word Count</em></p>
 
         <p>
-            The top-performing captions averaged <strong>10.3 words</strong>. The bottom ones? <strong>11.0 words</strong>.
-            Is that a huge difference? No. Is it statistically significant? Absolutely. 
-            So, cut that extra adjective. It might cost you the contest.
+            The top-performing captions averaged <strong>10.3 words</strong>. The bottom ones? <strong>11.0 words</strong>. A small difference? Perhaps. But with a p-value less than 0.0001, it is statistically indisputable. Cut that extra adjective. It might cost you the contest.
         </p>
     </section>
 
     <section id="vocabulary">
-        <h2>Lesson 2: Don't Use Big Words</h2>
+        <h2>Lesson 2: Eschew Obfuscation</h2>
         <p>
-            We thought, "Maybe funny people use complex vocabulary!" We calculated the <strong>Type-Token Ratio (TTR)</strong> to measure vocabulary richness.
+            We hypothesized that the funniest people might employ a complex vocabulary. We calculated the <strong>Type-Token Ratio (TTR)</strong> to measure vocabulary richness across millions of entries.
         </p>
         <p>
-            <strong>Result:</strong> Everyone is basically Shakespeare. Or a 5-year-old. The average TTR was <strong>0.99</strong> across the board. 
-            There is effectively <em>no difference</em> in vocabulary richness between the winners and the losers.
+            <strong>The Result:</strong> Everyone is Shakespeare. Or everyone is a five-year-old. The average TTR was <strong>0.99</strong> across the board. There is effectively <em>no difference</em> in vocabulary richness between the winners and the losers.
         </p>
         <div class="highlight-box">
-            "Using sesquipedalian verbiage does not augment comedic efficacy." <br>
-            Translation: Big words don't make you funny.
+            "Using sesquipedalian verbiage does not augment comedic efficacy."
         </div>
+        <p style="text-align: center;">Translation: Big words don't make you funny.</p>
     </section>
 
     <section id="themes">
-        <h2>Lesson 3: What Are We Joking About?</h2>
+        <h2>Lesson 3: The Ghost in the Machine</h2>
         <p>
-            We trained an AI (BERT, our new best friend) to read the jokes so we didn't have to. 
-            We used <strong>Spherical k-means clustering</strong> and <strong>c-TF-IDF</strong> to find the hidden themes.
+            We trained an AI (BERT, our new best friend) to read the jokes so we didn't have to. Using <strong>Spherical k-means clustering</strong> and <strong>c-TF-IDF</strong>, we sought hidden themes.
         </p>
         <p>
-            We found that captions tend to cluster around specific topics depending on the image (groundbreaking, we know). 
-            But teaching a computer to understand "why" a man in a chicken suit is funny? That's the real punchline.
+            We found that captions tend to cluster around specific topics depending on the image (groundbreaking, we know). But teaching a computer to understand <em>why</em> a man in a chicken suit is funny remains the ultimate punchline.
         </p>
-        <!-- Placeholder for future theme visualization if available -->
-        <p><em>(Visualizations of our robot trying to understand humor coming soon.)</em></p>
     </section>
 
     <section id="failures">
@@ -94,33 +97,31 @@
         </p>
         <ul>
             <li>
-                <strong>Classifying Humor Types:</strong> We tried to categorize jokes into "Irony", "Dark Humor", and "Wordplay". 
-                Turns out, explaining a joke to an algorithm kills the joke <em>and</em> the algorithm. We dropped this faster than a bad stand-up set.
+                <strong>Classifying Humor Types:</strong> We tried to categorize jokes into "Irony", "Dark Humor", and "Wordplay". Turns out, explaining a joke to an algorithm kills both the joke and the algorithm.
             </li>
             <li>
-                <strong>Context Analysis:</strong> We wanted to see if world events (using the GDELT dataset) influenced humor. 
-                Then we saw the dataset was <strong>288GB</strong>. We decided that political stability is important, but not "crash our laptops" important.
+                <strong>Context Analysis:</strong> We attempted to correlate humor with world events using the GDELT dataset. Then we discovered the dataset was <strong>288GB</strong>. We decided that political stability is important, but preserving our RAM is importanter.
             </li>
         </ul>
     </section>
 
     <section id="conclusion">
-        <h2>Conclusion</h2>
+        <h2>The Verdict</h2>
         <p>
-            So, how do you win the New Yorker Caption Contest?
+            How does one win the New Yorker Caption Contest?
         </p>
-        <ol>
+        <ol style="font-size: 1.2rem; line-height: 1.8;">
             <li><strong>Keep it short.</strong> (Around 10 words is the sweet spot).</li>
-            <li><strong>Don't overthink the vocabulary.</strong> Simple works.</li>
+            <li><strong>Keep it simple.</strong> Don't overthink the vocabulary.</li>
             <li><strong>Be lucky.</strong> (We didn't test for this, but it helps).</li>
         </ol>
-        <div class="highlight-box">
+        <div class="highlight-box" style="font-size: 1.2rem;">
             "Analysis kills spontaneity. That's why we did it."
         </div>
     </section>
 
     <footer>
-        <h3>Created by Team JSON Derulo</h3>
+        <div style="margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Created by Team JSON Derulo</div>
         <ul class="team-list">
             <li>Adrián Fernández Lojo</li>
             <li>Hanna Zwygart</li>
@@ -128,7 +129,7 @@
             <li>Mariem Maazoun</li>
             <li>Marina-Carmen Meredith Romero</li>
         </ul>
-        <p>EPFL ADA 2025 Project</p>
+        <p style="margin-top: 20px;">EPFL ADA 2025 Project &copy; 2025</p>
         <p><a href="https://github.com/epfl-ada/ada-2025-project-json-derulo">View on GitHub</a></p>
     </footer>
 
@@ -146,7 +147,15 @@
             section.classList.add('step');
             observer.observe(section);
         });
+
+        // Simple active tab highlighter
+        const links = document.querySelectorAll('.nav-tabs a');
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                links.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     </script>
 </body>
 </html>
-

@@ -1,10 +1,12 @@
 :root {
-    --primary-color: #000;
-    --secondary-color: #d93025; /* New Yorker-ish red */
+    --primary-color: #121212;
+    --secondary-color: #121212;
+    --accent-color: #df3c32; /* Subtle red for buttons/accents if needed */
     --bg-color: #fff;
-    --text-color: #333;
-    --font-heading: 'Georgia', serif;
-    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --text-color: #121212;
+    --font-heading: 'Adobe Caslon Pro', 'Georgia', 'Times New Roman', serif;
+    --font-body: 'Adobe Caslon Pro', 'Georgia', 'Times New Roman', serif;
+    --font-ui: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -13,147 +15,220 @@ body {
     font-family: var(--font-body);
     background-color: var(--bg-color);
     color: var(--text-color);
-    line-height: 1.6;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
 }
 
+/* HEADER / MASTHEAD */
 header {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    background-color: #fff;
+    padding: 20px 0;
     text-align: center;
-    background: radial-gradient(circle, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #000;
+    margin-bottom: 40px;
+}
+
+.masthead {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+    margin: 0;
+    line-height: 1;
+}
+
+.sub-masthead {
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 10px;
+    color: #333;
+}
+
+/* NAVIGATION-LIKE TABS */
+.nav-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 40px;
+}
+
+.nav-tabs a {
+    text-decoration: none;
+    color: #999;
+    transition: color 0.2s;
+}
+
+.nav-tabs a:hover, .nav-tabs a.active {
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 5px;
+}
+
+/* CONTENT SECTIONS */
+section {
+    max-width: 740px; /* Typical article width */
+    margin: 0 auto 60px auto;
     padding: 0 20px;
 }
 
 h1 {
     font-family: var(--font-heading);
-    font-size: 4rem;
-    margin-bottom: 10px;
-    letter-spacing: -1px;
+    font-size: 3.5rem;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    text-align: center;
+    font-style: italic;
 }
 
 h2 {
-    font-family: var(--font-heading);
-    font-size: 2.5rem;
-    margin-top: 40px;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 50px;
     margin-bottom: 20px;
-    border-bottom: 2px solid var(--secondary-color);
-    display: inline-block;
-    padding-bottom: 10px;
+    border-top: 1px solid #000;
+    padding-top: 20px;
 }
 
-h3 {
-    font-family: var(--font-heading);
-    font-size: 1.5rem;
-    margin-top: 20px;
-    color: var(--secondary-color);
+p {
+    font-size: 1.2rem;
+    margin-bottom: 1.5em;
 }
 
 .subtitle {
-    font-size: 1.5rem;
-    font-weight: 300;
+    text-align: center;
+    font-family: var(--font-ui);
+    font-size: 1.1rem;
     color: #666;
+    margin-bottom: 40px;
     max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-section {
-    padding: 60px 20px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
+/* HIGHLIGHT BOX / QUOTE */
 .highlight-box {
-    background-color: #f8f9fa;
-    border-left: 5px solid var(--secondary-color);
-    padding: 20px;
-    margin: 30px 0;
-    font-style: italic;
     font-family: var(--font-heading);
-    font-size: 1.2rem;
+    font-size: 1.6rem;
+    font-style: italic;
+    text-align: center;
+    margin: 50px 0;
+    color: #121212;
+    padding: 20px;
+    border-top: 4px solid #000;
+    border-bottom: 4px solid #000;
 }
 
+/* BUTTONS */
+.button {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid #000;
+    padding: 12px 24px;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-top: 20px;
+}
+
+.button:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+/* STATS VISUALIZATION */
 .stat-container {
     display: flex;
-    justify-content: space-around;
-    align-items: flex-end;
+    justify-content: center;
+    gap: 40px;
     margin: 40px 0;
+    font-family: var(--font-ui);
+}
+
+.stat-bar-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
     height: 200px;
-    text-align: center;
 }
 
 .stat-bar {
-    width: 100px;
-    background-color: var(--secondary-color);
-    color: white;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 10px;
-    font-weight: bold;
+    width: 60px;
+    background-color: #000;
+    margin-bottom: 10px;
     transition: height 1s ease-out;
-    position: relative;
 }
 
-.stat-label {
-    position: absolute;
-    bottom: -30px;
-    width: 100%;
-    color: var(--text-color);
-    font-size: 0.9rem;
+.stat-bar.short {
+    background-color: #999; /* Distinguish comparisons */
 }
 
 .stat-value {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
 }
 
-blockquote {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    border-left: 4px solid #ddd;
-    padding-left: 20px;
-    margin: 30px 0;
-    color: #555;
+.stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #666;
+    text-align: center;
 }
 
+/* FOOTER */
 footer {
-    background-color: #f1f1f1;
+    border-top: 1px solid #ddd;
+    margin-top: 80px;
     padding: 40px 20px;
     text-align: center;
-    font-size: 0.9rem;
-    margin-top: 60px;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    color: #666;
 }
 
 .team-list {
     list-style: none;
     padding: 0;
-    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
 }
 
 .team-list li {
     display: inline;
-    margin: 0 10px;
 }
 
-.button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: var(--secondary-color);
-    color: white;
+a {
+    color: #121212;
+    text-decoration: underline;
+}
+
+a:hover {
     text-decoration: none;
-    border-radius: 5px;
-    font-weight: bold;
-    margin-top: 20px;
-    transition: background-color 0.3s;
 }
 
-.button:hover {
-    background-color: #b02318;
-}
-
-/* Scrollytelling vibes */
+/* ANIMATIONS */
 .step {
     opacity: 0;
     transform: translateY(20px);
@@ -164,4 +239,3 @@ footer {
     opacity: 1;
     transform: translateY(0);
 }
-
