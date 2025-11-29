@@ -1,0 +1,238 @@
+/* Reset and Base Styles */
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #e74c3c;
+    --bg-color: #ffffff;
+    --text-color: #333333;
+    --code-bg: #f4f4f4;
+    --font-serif: 'Lora', serif;
+    --font-sans: 'Montserrat', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-serif);
+    line-height: 1.8;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+}
+
+/* Navigation */
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid #eee;
+    z-index: 1000;
+    padding: 1rem 0;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.logo {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 2px;
+    color: var(--primary-color);
+}
+
+.links a {
+    font-family: var(--font-sans);
+    text-decoration: none;
+    color: var(--text-color);
+    margin-left: 2rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s;
+}
+
+.links a:hover {
+    color: var(--accent-color);
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 0 2rem;
+}
+
+.hero-content {
+    max-width: 800px;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    line-height: 1.2;
+}
+
+.hero .subtitle {
+    font-family: var(--font-sans);
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Content Sections */
+.content-section {
+    padding: 4rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.text-block {
+    margin-bottom: 2rem;
+}
+
+h2, h3, h4 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+h2 { font-size: 2.5rem; margin-top: 2rem; }
+h3 { font-size: 1.8rem; margin-top: 1.5rem; }
+h4 { font-size: 1.4rem; font-family: var(--font-sans); color: #666; }
+
+p {
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+}
+
+.insight {
+    border-left: 4px solid var(--accent-color);
+    padding-left: 1.5rem;
+    font-style: italic;
+    color: #555;
+}
+
+/* Code Blocks */
+.code-block {
+    margin: 2rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.code-block pre {
+    margin: 0;
+}
+
+.output-block {
+    background-color: #fafafa;
+    border-left: 4px solid #ccc;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    overflow-x: auto;
+}
+
+/* Figures/Placeholders */
+.figure-placeholder {
+    background-color: #f9f9f9;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem 0;
+}
+
+.placeholder-content {
+    text-align: center;
+    color: #888;
+}
+
+.placeholder-content span {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Tables */
+.table-wrapper {
+    overflow-x: auto;
+    margin: 2rem 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+}
+
+th, td {
+    text-align: left;
+    padding: 0.75rem;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Footer */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.footer-content h3 {
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.team-list {
+    list-style: none;
+    margin: 2rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    font-family: var(--font-sans);
+}
+
+.citation {
+    font-size: 0.8rem;
+    opacity: 0.7;
+    margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero h1 { font-size: 2.5rem; }
+    .hero .subtitle { font-size: 1rem; }
+    .content-section { padding: 2rem 1rem; }
+}
+

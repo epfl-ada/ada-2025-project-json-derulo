@@ -1,0 +1,167 @@
+:root {
+    --primary-color: #000;
+    --secondary-color: #d93025; /* New Yorker-ish red */
+    --bg-color: #fff;
+    --text-color: #333;
+    --font-heading: 'Georgia', serif;
+    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+header {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: radial-gradient(circle, #f8f9fa 0%, #e9ecef 100%);
+    padding: 0 20px;
+}
+
+h1 {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+h2 {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--secondary-color);
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+h3 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    margin-top: 20px;
+    color: var(--secondary-color);
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #666;
+    max-width: 600px;
+}
+
+section {
+    padding: 60px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.highlight-box {
+    background-color: #f8f9fa;
+    border-left: 5px solid var(--secondary-color);
+    padding: 20px;
+    margin: 30px 0;
+    font-style: italic;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+}
+
+.stat-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    margin: 40px 0;
+    height: 200px;
+    text-align: center;
+}
+
+.stat-bar {
+    width: 100px;
+    background-color: var(--secondary-color);
+    color: white;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 10px;
+    font-weight: bold;
+    transition: height 1s ease-out;
+    position: relative;
+}
+
+.stat-label {
+    position: absolute;
+    bottom: -30px;
+    width: 100%;
+    color: var(--text-color);
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+blockquote {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    border-left: 4px solid #ddd;
+    padding-left: 20px;
+    margin: 30px 0;
+    color: #555;
+}
+
+footer {
+    background-color: #f1f1f1;
+    padding: 40px 20px;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 60px;
+}
+
+.team-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.team-list li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+
+.button:hover {
+    background-color: #b02318;
+}
+
+/* Scrollytelling vibes */
+.step {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+}
+
+.step.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
