@@ -81,25 +81,19 @@
         <p>
             You know that friend who takes ten minutes to get to the punchline? Do not be that friend. Our structural analysis revealed a groundbreaking truth: <strong>size matters, and smaller is better.</strong>
         </p>
-        
-        <div class="stat-container">
-            <div class="stat-bar-group">
-                <span class="stat-value">10.3</span>
-                <div class="stat-bar" style="height: 103px;"></div>
-                <span class="stat-label">Top 20%<br>(Funny)</span>
-            </div>
-            <div class="stat-bar-group">
-                <span class="stat-value">11.0</span>
-                <div class="stat-bar short" style="height: 110px;"></div>
-                <span class="stat-label">Bottom 20%<br>(Not Funny)</span>
-            </div>
+    
+        <!-- Replace the static bar plot with the interactive Plotly figure -->
+        <div class="plot-container" style="text-align:center; margin: 20px 0;">
+            <iframe src="structural_test.html" width="100%" height="600" style="border:none;"></iframe>
         </div>
+    
         <p style="text-align: center; font-family: var(--font-ui); font-size: 0.8rem; margin-top: -20px;"><em>Average Word Count</em></p>
-
+    
         <p>
             The top-performing captions averaged <strong>10.3 words</strong>. The bottom ones? <strong>11.0 words</strong>. A small difference? Perhaps. But with a p-value less than 0.0001, it is statistically indisputable. Cut that extra adjective. It might cost you the contest.
         </p>
     </section>
+    
 
     <section id="vocabulary">
         <h2>Lesson 2: Less is More </h2>
