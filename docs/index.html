@@ -38,25 +38,23 @@
 
     <!-- 🚀 QUIZ SECTION STARTS HERE -->
 <section id="quiz">
-    <h2>📊 Caption Quiz</h2>
-    <p>Which joke is <strong>(objectively)</strong> the funniest for this image?</p>
+        <h2>📊 Caption Quiz</h2>
+        <p>Which joke is <strong>(objectively)</strong> the funniest for this image?</p>
 
-    <!-- Cartoon image -->
-    <div style="text-align:center;">
-        <img id="quiz-image" alt="Cartoon" style="max-width:60%; border:1px solid #ccc; border-radius:8px;">
-    </div>
-
-    <!-- Quiz -->
-    <form id="quizForm" style="margin-top:20px;">
-        <div id="quiz-options">
-            <!-- Options will be added dynamically here -->
+        <div style="text-align:center;">
+            <img id="quiz-image" alt="Cartoon" style="max-width:60%; border:1px solid #ccc; border-radius:8px;">
         </div>
-        <br>
-        <button type="button" onclick="submitQuiz()" class="button">Submit</button>
-    </form>
 
-    <p id="result" style="margin-top:20px; font-weight:bold;"></p>
+        <form id="quizForm" style="margin-top:20px;">
+            <div id="quiz-options"></div>
+            <br>
+            <button type="button" onclick="submitQuiz()" class="button">Submit</button>
+        </form>
+
+        <p id="result" style="margin-top:20px; font-weight:bold;"></p>
+        <p id="score" style="margin-top:10px; font-weight:bold;">Score: 0 / 0</p>
 </section>
+
     <!-- 🚀 QUIZ SECTION ENDS HERE -->
 
     <footer>
@@ -98,90 +96,108 @@
 
         // 🎨 Quiz images and captions
         const quizData = [
-            {
-                image: "images/510.jpg",
-                captions: [
-                    { text: "I'm a congressman--obstruction is my job.", correct: true },
-                    { text: "I'm what they mean when they say, 'The middle class is getting stepped on.'", correct: false },
-                    { text: "Does this suit make me look flat?", correct: false }
-                ]
-            },
-            {
-                image: "images/511.jpg",
-                captions: [
-                    { text: "I'm hourly.", correct: true },
-                    { text: "And one day your son will keep you from having a heart attack.", correct: false },
-                    { text: "I wish you had found that yesterday.", correct: false }
-                ]
-            },
-            {
-                image: "images/512.jpg",
-                captions: [
-                    { text: "We're pretentious, not ostentatious.", correct: true },
-                    { text: "Broga meets on the 2nd floor.", correct: false },
-                    { text: "Please put that back in reception.", correct: false }
-                ]
-            }
-        ];
+        {
+            image: "images/510.jpg",
+            captions: [
+                { text: "I'm a congressman--obstruction is my job.", correct: true },
+                { text: "I'm what they mean when they say, 'The middle class is getting stepped on.'", correct: false },
+                { text: "Does this suit make me look flat?", correct: false }
+            ]
+        },
+        {
+            image: "images/511.jpg",
+            captions: [
+                { text: "I'm hourly.", correct: true },
+                { text: "And one day your son will keep you from having a heart attack.", correct: false },
+                { text: "I wish you had found that yesterday.", correct: false }
+            ]
+        },
+        {
+            image: "images/512.jpg",
+            captions: [
+                { text: "We're pretentious, not ostentatious.", correct: true },
+                { text: "Broga meets on the 2nd floor.", correct: false },
+                { text: "Please put that back in reception.", correct: false }
+            ]
+        }
+    ];
 
-        // Global variable to store current quiz options
-        let currentQuiz = null;
+    let currentQuiz = null;
+    let correctScore = 0;
+    let totalAttempts = 0;
 
-        // Pick a random quiz and display it
-        function loadRandomQuiz() {
-            const randomIndex = Math.floor(Math.random() * quizData.length);
-            currentQuiz = quizData[randomIndex];
+    function loadRandomQuiz() {
+        const randomIndex = Math.floor(Math.random() * quizData.length);
+        currentQuiz = quizData[randomIndex];
 
-            // Set image
-            document.getElementById("quiz-image").src = currentQuiz.image;
+        // Set image
+        document.getElementById("quiz-image").src = currentQuiz.image;
 
-            // Shuffle captions
-            const shuffled = currentQuiz.captions
-                .map(value => ({ value, sort: Math.random() }))
-                .sort((a, b) => a.sort - b.sort)
-                .map(({ value }) => value);
+        // Shuffle captions
+        const shuffled = currentQuiz.captions
+            .map(value => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value);
 
-            // Display captions as radio buttons
-            const optionsDiv = document.getElementById("quiz-options");
-            optionsDiv.innerHTML = ""; // clear old options
+        const optionsDiv = document.getElementById("quiz-options");
+        optionsDiv.innerHTML = "";
 
-            shuffled.forEach((caption, index) => {
-                const label = document.createElement("label");
-                label.innerHTML = `<input type="radio" name="caption" value="${index}"> ${caption.text}`;
-                label.style.display = "block";
-                label.style.margin = "8px 0";
-                optionsDiv.appendChild(label);
-            });
+        shuffled.forEach((caption, index) => {
+            const label = document.createElement("label");
+            label.innerHTML = `<input type="radio" name="caption" value="${index}"> ${caption.text}`;
+            label.style.display = "block";
+            label.style.margin = "8px 0";
+            optionsDiv.appendChild(label);
+        });
 
-            // Save shuffled captions for checking
-            currentQuiz.shuffledCaptions = shuffled;
+        currentQuiz.shuffledCaptions = shuffled;
+        document.getElementById("result").textContent = "";
+    }
+
+    loadRandomQuiz();
+
+    function submitQuiz() {
+        const selectedInput = document.querySelector('input[name="caption"]:checked');
+        const result = document.getElementById("result");
+
+        if (!selectedInput) {
+            result.textContent = "Pick a caption or the joke is on you 😑";
+            return;
         }
 
-        // Load a random quiz on page load
-        loadRandomQuiz();
+        const selectedIndex = parseInt(selectedInput.value);
 
-        // Submit quiz
-        function submitQuiz() {
-            const selectedIndex = document.querySelector('input[name="caption"]:checked');
-            const result = document.getElementById("result");
+        // Clear previous ticks
+        currentQuiz.shuffledCaptions.forEach((caption, index) => {
+            const label = document.querySelectorAll("#quiz-options label")[index];
+            label.style.color = "black";
+            label.innerHTML = label.textContent.replace(/^✅ |^❌ /, "");
+        });
 
-            if (!selectedIndex) {
-                result.textContent = "Pick a caption or the joke is on you 😑";
-                return;
+        // Show ticks/crosses
+        currentQuiz.shuffledCaptions.forEach((caption, index) => {
+            const label = document.querySelectorAll("#quiz-options label")[index];
+            if (caption.correct) {
+                label.innerHTML = `✅ ${label.textContent}`;
+                label.style.color = "green";
+            } else if (index === selectedIndex && !caption.correct) {
+                label.innerHTML = `❌ ${label.textContent}`;
+                label.style.color = "red";
             }
+        });
 
-            const index = parseInt(selectedIndex.value);
-            const isCorrect = currentQuiz.shuffledCaptions[index].correct;
+        // Update score
+        totalAttempts += 1;
+        if (currentQuiz.shuffledCaptions[selectedIndex].correct) {
+            correctScore += 1;
+        }
 
-            if (isCorrect) {
-                result.textContent = "Correct! You clearly have elite jokesmanship 😎";
-            } else {
-                result.textContent = "Incorrect. Comedy is subjective, but not that subjective.";
-            }
+        document.getElementById("score").textContent = `Score: ${correctScore} / ${totalAttempts}`;
 
-            // Load a new random quiz after vote
+        setTimeout(() => {
             loadRandomQuiz();
-        }
+        }, 2000);
+    }
 </script>
 
 
