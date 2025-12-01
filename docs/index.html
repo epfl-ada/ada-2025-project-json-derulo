@@ -37,27 +37,26 @@
     </section>
 
     <!-- 🚀 QUIZ SECTION STARTS HERE -->
-    <section id="quiz">
-        <h2>📊 Caption Quiz</h2>
-        <p>Which joke is <strong>(objectively)</strong> the funniest for this image?</p>
+<section id="quiz">
+    <h2>📊 Caption Quiz</h2>
+    <p>Which joke is <strong>(objectively)</strong> the funniest for this image?</p>
 
-        <!-- Cartoon image -->
-        <div style="text-align:center;">
+    <!-- Cartoon image -->
+    <div style="text-align:center;">
         <img id="quiz-image" alt="Cartoon" style="max-width:60%; border:1px solid #ccc; border-radius:8px;">
+    </div>
 
+    <!-- Quiz -->
+    <form id="quizForm" style="margin-top:20px;">
+        <div id="quiz-options">
+            <!-- Options will be added dynamically here -->
         </div>
+        <br>
+        <button type="button" onclick="submitQuiz()" class="button">Submit</button>
+    </form>
 
-        <!-- Quiz -->
-        <form id="quizForm" style="margin-top:20px;">
-            <label><input type="radio" name="caption" value="1"> "Caption 1" 🤔</label><br>
-            <label><input type="radio" name="caption" value="2"> "Caption 2" 😂</label><br>
-            <label><input type="radio" name="caption" value="3"> "Caption 3" 😭</label><br><br>
-
-            <button type="button" onclick="submitQuiz()" class="button">Submit</button>
-        </form>
-
-        <p id="result" style="margin-top:20px; font-weight:bold;"></p>
-    </section>
+    <p id="result" style="margin-top:20px; font-weight:bold;"></p>
+</section>
     <!-- 🚀 QUIZ SECTION ENDS HERE -->
 
     <footer>
@@ -97,33 +96,94 @@
             });
         });
 
-        // 🎉 Quiz logic
-        const images = [
-    "docs/images/510.jpg",
-    "docs/images/511.jpg",
-    "docs/images/512.jpg",
-    // add more images if needed later
-    ];
+        // 🎨 Quiz images and captions
+        const quizData = [
+            {
+                image: "images/510.jpg",
+                captions: [
+                    { text: "I'm a congressman--obstruction is my job.", correct: true },
+                    { text: "I'm what they mean when they say, 'The middle class is getting stepped on.'", correct: false },
+                    { text: "Does this suit make me look flat?", correct: false }
+                ]
+            },
+            {
+                image: "images/511.jpg",
+                captions: [
+                    { text: "I'm hourly.", correct: true },
+                    { text: "And one day your son will keep you from having a heart attack.", correct: false },
+                    { text: "I wish you had found that yesterday.", correct: false }
+                ]
+            },
+            {
+                image: "images/512.jpg",
+                captions: [
+                    { text: "We're pretentious, not ostentatious.", correct: true },
+                    { text: "Broga meets on the 2nd floor.", correct: false },
+                    { text: "Please put that back in reception.", correct: false }
+                ]
+            }
+        ];
 
-const randomImage = images[Math.floor(Math.random() * images.length)];
-document.getElementById("quiz-image").src = randomImage;
+        // Global variable to store current quiz options
+        let currentQuiz = null;
+
+        // Pick a random quiz and display it
+        function loadRandomQuiz() {
+            const randomIndex = Math.floor(Math.random() * quizData.length);
+            currentQuiz = quizData[randomIndex];
+
+            // Set image
+            document.getElementById("quiz-image").src = currentQuiz.image;
+
+            // Shuffle captions
+            const shuffled = currentQuiz.captions
+                .map(value => ({ value, sort: Math.random() }))
+                .sort((a, b) => a.sort - b.sort)
+                .map(({ value }) => value);
+
+            // Display captions as radio buttons
+            const optionsDiv = document.getElementById("quiz-options");
+            optionsDiv.innerHTML = ""; // clear old options
+
+            shuffled.forEach((caption, index) => {
+                const label = document.createElement("label");
+                label.innerHTML = `<input type="radio" name="caption" value="${index}"> ${caption.text}`;
+                label.style.display = "block";
+                label.style.margin = "8px 0";
+                optionsDiv.appendChild(label);
+            });
+
+            // Save shuffled captions for checking
+            currentQuiz.shuffledCaptions = shuffled;
+        }
+
+        // Load a random quiz on page load
+        loadRandomQuiz();
+
+        // Submit quiz
         function submitQuiz() {
-            const selected = document.querySelector('input[name="caption"]:checked');
+            const selectedIndex = document.querySelector('input[name="caption"]:checked');
             const result = document.getElementById("result");
 
-            if (!selected) {
+            if (!selectedIndex) {
                 result.textContent = "Pick a caption or the joke is on you 😑";
                 return;
             }
 
-            const correct = "2"; // "Objectively" funniest
-            if (selected.value === correct) {
+            const index = parseInt(selectedIndex.value);
+            const isCorrect = currentQuiz.shuffledCaptions[index].correct;
+
+            if (isCorrect) {
                 result.textContent = "Correct! You clearly have elite jokesmanship 😎";
             } else {
                 result.textContent = "Incorrect. Comedy is subjective, but not that subjective.";
             }
+
+            // Load a new random quiz after vote
+            loadRandomQuiz();
         }
-    </script>
+</script>
+
 
 </body>
 </html>
