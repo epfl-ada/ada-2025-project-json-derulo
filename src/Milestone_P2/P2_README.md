@@ -51,6 +51,7 @@ However, we found that the data size was unmanageable (one month of data = 2GB),
 
 Although we do not have additional datasets, we are enriching our data through augmentation methods.
 
+<<<<<<< Updated upstream
 
 ## Methods
  All methods started with the same root: pre-procesing and data-cleaning (missing data, corrupted captions, LLM augmentation via Ollama, ...). 
@@ -92,6 +93,19 @@ Here are the methods used for our [research qestions](#research-questions):
 - **Data Collection & Cleaning:** 
  - Handling missing data
  - Data enrichment
+=======
+ The GDELT Events dataset corresponding to the years covered by the New Yorker Caption Contest. This will allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions.
+
+ After looking deeper into our GDELT dataset, we have also come to the conclusion that its data was too big to properly navigate in 
+
+## Methods 
+
+- **Data Collection & Cleaning:** 
+ /begin{itemize}
+ Preprocessing and more calculations in order to associate a date to the contest.
+ -Merging all the csv's in on big csv with caption numbers.
+ -Handeling the missing data like missing contests (525 and 540), missing image descriptions (from 764), missimg contest dates
+>>>>>>> Stashed changes
   
 - **Exploratory Data Analysis (EDA):** 
  - Visualization through all contests

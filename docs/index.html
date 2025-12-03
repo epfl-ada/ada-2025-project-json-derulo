@@ -218,8 +218,6 @@
 
         <script>
 
-            // Shuffle the order once at the start
-            quizOrder = quizOrder.sort(() => Math.random() - 0.5);
             // Simple scroll reveal
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -333,51 +331,49 @@
             const selectedInput = document.querySelector('input[name="caption"]:checked');
             const result = document.getElementById("result");
 
-            if (!selectedInput) {
-                result.textContent = "Pick a caption or the joke is on you 😑";
-                return;
-            }
-
-            const selectedIndex = parseInt(selectedInput.value);
-
-            // Clear previous ticks
-            document.querySelectorAll(".caption-icon").forEach(icon => {
-                icon.textContent = "";
-            });
-            document.querySelectorAll("#quiz-options label").forEach(label => {
-                label.style.color = "black";
-            });
-
-            // Show ticks/crosses
-            currentQuiz.shuffledCaptions.forEach((caption, index) => {
-                const label = document.querySelectorAll("#quiz-options label")[index];
-                const icon = label.querySelector(".caption-icon");
-
-                if (caption.correct) {
-                    icon.textContent = "✅";
-                    label.style.color = "green";
-                } else if (index === selectedIndex) {
-                    icon.textContent = "❌";
-                    label.style.color = "red";
+                if (!selectedInput) {
+                    result.textContent = "Pick a caption or the joke is on you 😑";
+                    return;
                 }
-            // Disable all choices after answering
-            document.querySelectorAll('input[name="caption"]').forEach(input => {
-                input.disabled = true;
-            });
 
-            // Update score
-            totalAttempts += 1;
-            if (currentQuiz.shuffledCaptions[selectedIndex].correct) {
-                correctScore += 1;
-            }
+                const selectedIndex = parseInt(selectedInput.value);
 
-            document.getElementById("score").textContent = `Score: ${correctScore} / ${totalAttempts}`;
-            const verdict = getFunnyVerdict(correctScore, totalAttempts);
-            document.getElementById("result").textContent = verdict;       
-            setTimeout(() => {
-                loadRandomQuiz();
-            }, 2000);
-        }
+                // Clear previous ticks
+                document.querySelectorAll(".caption-icon").forEach(icon => { icon.textContent = ""; });
+                document.querySelectorAll("#quiz-options label").forEach(label => { label.style.color = "black"; });
+
+                // Show ticks/crosses
+                currentQuiz.shuffledCaptions.forEach((caption, index) => {
+                    const label = document.querySelectorAll("#quiz-options label")[index];
+                    const icon = label.querySelector(".caption-icon");
+
+                    if (caption.correct) {
+                        icon.textContent = "✅";
+                        label.style.color = "green";
+                    } else if (index === selectedIndex) {
+                        icon.textContent = "❌";
+                        label.style.color = "red";
+                    }
+                });
+
+                // Disable all choices
+                document.querySelectorAll('input[name="caption"]').forEach(input => { input.disabled = true; });
+
+                // Update score
+                totalAttempts += 1;
+                if (currentQuiz.shuffledCaptions[selectedIndex].correct) correctScore += 1;
+
+                // Load next quiz or show final verdict
+                if (quizIndex < quizOrder.length) {
+                    loadRandomQuiz();
+                } else {
+                    result.textContent = `🎉 Quiz finished! Final Score: ${correctScore} / ${totalAttempts}\n\n${getFunnyVerdict(correctScore, totalAttempts)}`;
+                }
+
+                // Update score display
+                document.getElementById("score").textContent = `Score: ${correctScore} / ${totalAttempts}`;
+    }
+
         function getFunnyVerdict(score, total) {
         const ratio = score / total;
 
