@@ -6,7 +6,7 @@
     <title>Cartoon Caption Contest Analysis | The New Yorker Style</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -24,9 +24,21 @@
         <a href="#conclusion">The Verdict</a>
     </nav>
 
+    <!-- Sticky Cheat Sheet -->
+    <div style="position: fixed; top: 100px; right: 20px; z-index: 1000; display: none;" id="stickyCheatSheet">
+        <iframe id="cheatSheetFrame" src="cheat_sheet.html" width="260" height="350" style="border:none; overflow:hidden;" title="Cheat Sheet"></iframe>
+    </div>
+
+    <!-- Show Cheat Sheet only on larger screens -->
+    <style>
+        @media (min-width: 1100px) {
+            #stickyCheatSheet { display: block !important; }
+        }
+    </style>
+
 
         <section id="intro">
-            <h1>How to Be Funny, For Dummies</h1>
+            <h1>How to Be Funny, <span class="dummies-logo"><span class="dummies-for">For</span> <span class="dummies-text">Dummies</span></span></h1>
             <div style="text-align: center; margin-bottom: 20px;">
                 <img src="images/for_dummies_logo.png" alt="For Dummies Mascot" style="width: 150px; height: auto;">
             </div>
@@ -222,10 +234,28 @@
             <p><a href="https://github.com/epfl-ada/ada-2025-project-json-derulo">View on GitHub</a></p>
         </footer>
 
-        <script>
+    <script>
 
-            // Simple scroll reveal
-            const observer = new IntersectionObserver((entries) => {
+        // --- CHEAT SHEET INTEGRATION ---
+        // We need to notify the iframe which section is currently visible
+        const cheatSheetIframe = document.getElementById('cheatSheetFrame');
+        
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && cheatSheetIframe) {
+                    // Send the ID of the visible section to the iframe
+                    cheatSheetIframe.contentWindow.postMessage(entry.target.id, '*');
+                }
+            });
+        }, { threshold: 0.5 }); // Trigger when 50% of the section is visible
+
+        document.querySelectorAll('section').forEach((section) => {
+            sectionObserver.observe(section);
+        });
+        // -------------------------------
+
+        // Simple scroll reveal
+        const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');

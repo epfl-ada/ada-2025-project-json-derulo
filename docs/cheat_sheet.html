@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheat Sheet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .cheat-sheet {
+            background-color: #FFD200; /* Dummies Yellow */
+            border: 2px solid #000;
+            width: 220px;
+            padding: 15px;
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .cheat-sheet::before {
+            content: "";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 25px;
+            background-color: rgba(255,255,255,0.6);
+            border: 1px solid #ccc;
+            transform: translateX(-50%) rotate(-2deg);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            /* Tape effect */
+        }
+
+        h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            margin: 0 0 15px 0;
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            opacity: 0.5;
+            transition: opacity 0.3s, transform 0.2s;
+        }
+
+        li.active {
+            opacity: 1;
+            font-weight: bold;
+            transform: scale(1.02);
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid #000;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            flex-shrink: 0;
+        }
+
+        .checkbox span {
+            display: none;
+            color: #000;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        li.checked .checkbox span {
+            display: block;
+        }
+
+        li.checked {
+            opacity: 1;
+            text-decoration: line-through;
+            color: #444;
+        }
+        
+        /* Header branding */
+        .brand {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-top: 15px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cheat-sheet">
+        <h3>Cheat Sheet</h3>
+        <ul id="checklist">
+            <li id="item-intro">
+                <div class="checkbox"><span>✓</span></div>
+                Start Research
+            </li>
+            <li id="item-structure">
+                <div class="checkbox"><span>✓</span></div>
+                Be Brief (10 words)
+            </li>
+            <li id="item-vocabulary">
+                <div class="checkbox"><span>✓</span></div>
+                Use Simple Words
+            </li>
+            <li id="item-interactive-tool">
+                <div class="checkbox"><span>✓</span></div>
+                Test Your Wit
+            </li>
+            <li id="item-quiz">
+                <div class="checkbox"><span>✓</span></div>
+                Judge Others
+            </li>
+        </ul>
+        <div class="brand">For Dummies™</div>
+    </div>
+
+    <script>
+        // Function to receive messages from the parent window
+        window.addEventListener('message', function(event) {
+            const sectionId = event.data;
+            
+            // Map sections to list items
+            const map = {
+                'intro': 'item-intro',
+                'structure': 'item-structure',
+                'vocabulary': 'item-vocabulary',
+                'interactive-tool': 'item-interactive-tool',
+                'quiz': 'item-quiz'
+            };
+
+            // Reset all
+            document.querySelectorAll('li').forEach(li => {
+                li.classList.remove('active');
+            });
+
+            // Mark previous items as checked
+            const order = ['intro', 'structure', 'vocabulary', 'interactive-tool', 'quiz'];
+            const currentIndex = order.indexOf(sectionId);
+
+            if (currentIndex !== -1) {
+                // Mark current as active
+                const activeId = map[sectionId];
+                if(activeId) document.getElementById(activeId).classList.add('active');
+
+                // Mark all previous as checked
+                for (let i = 0; i <= currentIndex; i++) {
+                    const checkedId = map[order[i]];
+                    if(checkedId) document.getElementById(checkedId).classList.add('checked');
+                }
+                 // Uncheck subsequent ones (in case of scrolling up)
+                 for (let i = currentIndex + 1; i < order.length; i++) {
+                    const uncheckedId = map[order[i]];
+                    if(uncheckedId) document.getElementById(uncheckedId).classList.remove('checked');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
