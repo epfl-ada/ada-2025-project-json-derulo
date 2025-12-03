@@ -117,10 +117,14 @@
 <body>
 
     <div class="container">
-        <h3>The Editor Simulator</h3>
-        <p>Submit your caption. We'll tell you if it survives the slush pile.</p>
+        <h3>The Caption Analyzer</h3>
+        <p>“Enter your caption.
+            We’ll tell you if it’s New Yorker–worthy or Dad-Joke Embassy material.</p>
         
-        <input type="text" id="userCaption" placeholder="Type your caption here..." onkeypress="handleEnter(event)">
+        <img id="contest-image" alt="New Yorker Cartoon" style="max-width: 80%; max-height: 250px; margin-bottom: 20px; border: 1px solid #ccc; padding: 5px;">
+
+        <br>
+        <input type="text" id="userCaption" placeholder="Type your witty caption here..." onkeypress="handleEnter(event)">
         <br>
         <button onclick="analyzeCaption()">Analyze</button>
 
@@ -131,6 +135,11 @@
     </div>
 
     <script>
+        // Load a random image on startup
+        const images = ["510.jpg", "511.jpg", "512.jpg"];
+        const randomImage = images[Math.floor(Math.random() * images.length)];
+        document.getElementById("contest-image").src = "images/quiz/" + randomImage;
+
         function handleEnter(e) {
             if (e.key === 'Enter') {
                 analyzeCaption();
@@ -178,13 +187,13 @@
 
             // Final Verdict
             if (score >= 2) {
-                verdict = "It's a Contender!";
+                verdict = "Verdict: You're Funny! (Maybe even New Yorker funny.)";
                 verdictDisplay.style.color = "#28a745";
             } else if (score >= 0) {
-                verdict = " It has Potential.";
+                verdict = "Verdict: You're... Learning. (Keep reading the guide.)";
                 verdictDisplay.style.color = "#d39e00";
             } else {
-                verdict = " Straight to the Bin.";
+                verdict = "Verdict: You're a Dummy. (Don't quit your day job.)";
                 verdictDisplay.style.color = "#dc3545";
             }
 
