@@ -217,6 +217,12 @@
         </footer>
 
         <script>
+            // Track quiz order to prevent repeats
+            let quizOrder = [...Array(quizData.length).keys()];  
+            let quizIndex = 0;
+
+            // Shuffle the order once at the start
+            quizOrder = quizOrder.sort(() => Math.random() - 0.5);
             // Simple scroll reveal
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -273,8 +279,12 @@
         let totalAttempts = 0;
 
         function loadRandomQuiz() {
-            const randomIndex = Math.floor(Math.random() * quizData.length);
-            currentQuiz = quizData[randomIndex];
+            if (quizIndex >= quizOrder.length) {
+                document.getElementById("result").textContent = "🎉 Quiz finished!";
+                return;
+            }
+            currentQuiz = quizData[quizOrder[quizIndex]];
+            quizIndex++;
 
             // Set image
             document.getElementById("quiz-image").src = currentQuiz.image;
@@ -350,6 +360,9 @@
                     icon.textContent = "❌";
                     label.style.color = "red";
                 }
+            // Disable all choices after answering
+            document.querySelectorAll('input[name="caption"]').forEach(input => {
+                input.disabled = true;
             });
 
             // Update score
