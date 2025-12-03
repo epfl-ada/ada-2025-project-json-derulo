@@ -137,7 +137,7 @@
                 <p>Think you can beat the algorithm? Test your caption below.</p>
             </div>
             <div class="plot-container" style="text-align:center; margin: 20px auto; max-width: 800px;">
-                <iframe src="caption_analyzer.html" width="100%" height="400" style="border:none; overflow:hidden;" title="Caption Analyzer"></iframe>
+                <iframe src="caption_analyzer.html" width="100%" height="600" style="border:none;" title="Caption Analyzer"></iframe>
             </div>
         </section>
 
@@ -193,7 +193,7 @@
                 </ul>
         </section>
 
-        <!-- 🚀 QUIZ SECTION STARTS HERE -->
+        <!--  QUIZ SECTION STARTS HERE -->
         <section id="quiz">
             <h2>Caption Quiz</h2>
             <p>Which joke is <strong>(objectively)</strong> the funniest for this image?</p>
@@ -205,14 +205,14 @@
             <form id="quizForm" style="margin-top:20px;">
                 <div id="quiz-options"></div>
                 <br>
-                <button type="button" onclick="submitQuiz()" class="button">Submit</button>
+                <button type="button" onclick="submitQuiz()" class="button">Judge Me</button>
             </form>
 
             <p id="result" style="margin-top:20px; font-weight:bold;"></p>
             <p id="score" style="margin-top:10px; font-weight:bold;">Score: 0 / 0</p>
         </section>
 
-        <!-- 🚀 QUIZ SECTION ENDS HERE -->
+        <!--  QUIZ SECTION ENDS HERE -->
 
         <footer>
             <div style="margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Created by Team JSON Derulo</div>
@@ -252,7 +252,7 @@
                 });
             });
 
-            // 🎨 Quiz images and captions
+            //  Quiz images and captions
             const quizData = [
             {
                 image: "images/510.jpg",
@@ -343,7 +343,7 @@
             const result = document.getElementById("result");
 
                 if (!selectedInput) {
-                    result.textContent = "Pick a caption or the joke is on you 😑";
+                    result.textContent = "Indecision is the enemy of comedy. Choose.";
                     return;
                 }
 
@@ -378,7 +378,7 @@
                 if (quizIndex < quizOrder.length) {
                     loadRandomQuiz();
                 } else {
-                    result.textContent = `🎉 Quiz finished! Final Score: ${correctScore} / ${totalAttempts}\n\n${getFunnyVerdict(correctScore, totalAttempts)}`;
+                    result.textContent = ` Quiz finished! Final Score: ${correctScore} / ${totalAttempts}\n\n${getFunnyVerdict(correctScore, totalAttempts)}`;
                 }
 
                 // Update score display
@@ -391,15 +391,15 @@
         if (total === 0) return "";
 
         if (ratio === 1) {
-            return "🎉 Congratulations! You're officially funny. Like, statistically funny.";
+            return " Congratulations! You're officially funny. Like, statistically funny.";
         }
         if (ratio >= 0.66) {
-            return "😎 You're kinda funny. A few more cartoons and you’ll be unstoppable.";
+            return " You're kinda funny. A few more cartoons and you’ll be unstoppable.";
         }
         if (ratio >= 0.33) {
-            return "🤨 You're trying. Comedy is hard. So is reading, apparently.";
+            return " You're trying. Comedy is hard. So is reading, apparently.";
         }
-        return "💀 You're not funny. At all. We hereby revoke your caption privileges.";
+        return " You're not funny. At all. We hereby revoke your caption privileges.";
     }
     </script>
 
