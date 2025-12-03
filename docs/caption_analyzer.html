@@ -14,8 +14,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* justify-content: center; Removed to prevent centering issues in iframe */
-            min-height: 100vh; /* Ensure full height background */
+            justify-content: center;
+            height: 100%;
             box-sizing: border-box;
         }
 
@@ -178,13 +178,13 @@
 
             // Final Verdict
             if (score >= 2) {
-                verdict = "🎉 It's a Contender!";
+                verdict = "It's a Contender!";
                 verdictDisplay.style.color = "#28a745";
             } else if (score >= 0) {
-                verdict = "🤔 It has Potential.";
+                verdict = " It has Potential.";
                 verdictDisplay.style.color = "#d39e00";
             } else {
-                verdict = "🗑️ Straight to the Bin.";
+                verdict = " Straight to the Bin.";
                 verdictDisplay.style.color = "#dc3545";
             }
 
