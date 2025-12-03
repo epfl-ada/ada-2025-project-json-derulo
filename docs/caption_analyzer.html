@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caption Analyzer</title>
+    <style>
+        body {
+            font-family: "Adobe Caslon Pro", "Caslon", "Georgia", "Times New Roman", serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        h3 {
+            font-family: "Irvin", "Georgia", serif;
+            font-weight: normal;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            border: 2px solid #000;
+            padding: 30px;
+            background-color: #f9f9f9;
+            box-shadow: 5px 5px 0px rgba(0,0,0,0.1);
+        }
+
+        p {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #000;
+        }
+
+        button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-family: "Futura", "Helvetica Neue", sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        #result-area {
+            margin-top: 25px;
+            min-height: 60px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .verdict {
+            font-weight: bold;
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .details {
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            margin: 0 2px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        .badge-good { background-color: #28a745; }
+        .badge-bad { background-color: #dc3545; }
+        .badge-warn { background-color: #ffc107; color: black; }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h3>The Editor Simulator</h3>
+        <p>Submit your caption. We'll tell you if it survives the slush pile.</p>
+        
+        <input type="text" id="userCaption" placeholder="Type your caption here..." onkeypress="handleEnter(event)">
+        <br>
+        <button onclick="analyzeCaption()">Analyze</button>
+
+        <div id="result-area">
+            <span id="result-verdict" class="verdict"></span>
+            <span id="result-details" class="details"></span>
+        </div>
+    </div>
+
+    <script>
+        function handleEnter(e) {
+            if (e.key === 'Enter') {
+                analyzeCaption();
+            }
+        }
+
+        function analyzeCaption() {
+            const text = document.getElementById('userCaption').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0);
+            const wordCount = words.length;
+            const verdictDisplay = document.getElementById('result-verdict');
+            const detailsDisplay = document.getElementById('result-details');
+
+            if (wordCount === 0) {
+                verdictDisplay.textContent = "The Page is Blank.";
+                detailsDisplay.textContent = "Minimalism is bold, but usually implies you forgot to write something.";
+                return;
+            }
+
+            let score = 0;
+            let lengthMsg = "";
+            let vocabMsg = "";
+            let verdict = "";
+
+            // 1. Length Analysis (Ideal: 7-14 words)
+            if (wordCount < 5) {
+                lengthMsg = `<span class="badge badge-warn">Too Short</span> It's a caption, not a title.`;
+            } else if (wordCount >= 5 && wordCount <= 12) {
+                lengthMsg = `<span class="badge badge-good">Perfect Length</span> The editor is nodding approvedly.`;
+                score += 1;
+            } else {
+                lengthMsg = `<span class="badge badge-bad">Too Long</span> You lost the reader around word ${wordCount - 5}.`;
+                score -= 1;
+            }
+
+            // 2. Vocabulary Analysis (Check for long words > 10 chars)
+            const longWords = words.filter(w => w.replace(/[^a-zA-Z]/g, "").length > 10);
+            if (longWords.length > 0) {
+                vocabMsg = `<span class="badge badge-bad">Too Complex</span> "${longWords[0]}"? Easy there, Shakespeare.`;
+                score -= 1;
+            } else {
+                vocabMsg = `<span class="badge badge-good">Simple Vocab</span> Accessible. Good.`;
+                score += 1;
+            }
+
+            // Final Verdict
+            if (score >= 2) {
+                verdict = "🎉 It's a Contender!";
+                verdictDisplay.style.color = "#28a745";
+            } else if (score >= 0) {
+                verdict = "🤔 It has Potential.";
+                verdictDisplay.style.color = "#d39e00";
+            } else {
+                verdict = "🗑️ Straight to the Bin.";
+                verdictDisplay.style.color = "#dc3545";
+            }
+
+            verdictDisplay.textContent = verdict;
+            detailsDisplay.innerHTML = `${lengthMsg}<br>${vocabMsg}`;
+        }
+    </script>
+</body>
+</html>
