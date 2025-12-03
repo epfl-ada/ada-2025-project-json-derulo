@@ -107,7 +107,6 @@
                 </p>
             </section>
             <section id="vocabulary">
-                    <h2>Lesson 2: Less is More </h2>
                     <h2>Lesson 2: Less is More</h2>
                     <p>
                         We hypothesized that the funniest people might employ a complex vocabulary. To test this, we calculated the <strong>Type-Token Ratio (TTR)</strong> to measure vocabulary richness across millions of entries.
@@ -185,7 +184,7 @@
 
         <!-- 🚀 QUIZ SECTION STARTS HERE -->
         <section id="quiz">
-            <h2>📊 Caption Quiz</h2>
+            <h2>Caption Quiz</h2>
             <p>Which joke is <strong>(objectively)</strong> the funniest for this image?</p>
 
             <div style="text-align:center;">
@@ -291,12 +290,29 @@
 
             shuffled.forEach((caption, index) => {
                 const label = document.createElement("label");
-                label.innerHTML = `<input type="radio" name="caption" value="${index}"> ${caption.text}`;
-                label.style.display = "block";
+                label.style.display = "flex";
+                label.style.alignItems = "center";
+                label.style.gap = "8px";
                 label.style.margin = "8px 0";
+
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = "caption";
+                input.value = index;
+
+                const text = document.createElement("span");
+                text.className = "caption-text";
+                text.textContent = caption.text;
+
+                const icon = document.createElement("span");
+                icon.className = "caption-icon"; // initially empty
+                icon.textContent = ""; 
+
+                label.appendChild(input);
+                label.appendChild(icon);
+                label.appendChild(text);
                 optionsDiv.appendChild(label);
             });
-
             currentQuiz.shuffledCaptions = shuffled;
             document.getElementById("result").textContent = "";
         }
@@ -315,20 +331,23 @@
             const selectedIndex = parseInt(selectedInput.value);
 
             // Clear previous ticks
-            currentQuiz.shuffledCaptions.forEach((caption, index) => {
-                const label = document.querySelectorAll("#quiz-options label")[index];
+            document.querySelectorAll(".caption-icon").forEach(icon => {
+                icon.textContent = "";
+            });
+            document.querySelectorAll("#quiz-options label").forEach(label => {
                 label.style.color = "black";
-                label.innerHTML = label.textContent.replace(/^✅ |^❌ /, "");
             });
 
             // Show ticks/crosses
             currentQuiz.shuffledCaptions.forEach((caption, index) => {
                 const label = document.querySelectorAll("#quiz-options label")[index];
+                const icon = label.querySelector(".caption-icon");
+
                 if (caption.correct) {
-                    label.innerHTML = `✅ ${label.textContent}`;
+                    icon.textContent = "✅";
                     label.style.color = "green";
-                } else if (index === selectedIndex && !caption.correct) {
-                    label.innerHTML = `❌ ${label.textContent}`;
+                } else if (index === selectedIndex) {
+                    icon.textContent = "❌";
                     label.style.color = "red";
                 }
             });
@@ -340,11 +359,28 @@
             }
 
             document.getElementById("score").textContent = `Score: ${correctScore} / ${totalAttempts}`;
-
+            const verdict = getFunnyVerdict(correctScore, totalAttempts);
+            document.getElementById("result").textContent = verdict;       
             setTimeout(() => {
                 loadRandomQuiz();
             }, 2000);
         }
+        function getFunnyVerdict(score, total) {
+        const ratio = score / total;
+
+        if (total === 0) return "";
+
+        if (ratio === 1) {
+            return "🎉 Congratulations! You're officially funny. Like, statistically funny.";
+        }
+        if (ratio >= 0.66) {
+            return "😎 You're kinda funny. A few more cartoons and you’ll be unstoppable.";
+        }
+        if (ratio >= 0.33) {
+            return "🤨 You're trying. Comedy is hard. So is reading, apparently.";
+        }
+        return "💀 You're not funny. At all. We hereby revoke your caption privileges.";
+    }
     </script>
 
 
