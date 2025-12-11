@@ -133,6 +133,10 @@
                 <div class="checkbox"><span>✓</span></div>
                 Test Your Wit
             </li>
+            <li id="item-timing">
+                <div class="checkbox"><span>✓</span></div>
+                Master Timing
+            </li>
             <li id="item-quiz">
                 <div class="checkbox"><span>✓</span></div>
                 Judge Others
@@ -152,6 +156,7 @@
                 'structure': 'item-structure',
                 'vocabulary': 'item-vocabulary',
                 'interactive-tool': 'item-interactive-tool',
+                'timing': 'item-timing',
                 'quiz': 'item-quiz'
             };
 
@@ -161,7 +166,7 @@
             });
 
             // Mark previous items as checked
-            const order = ['intro', 'structure', 'vocabulary', 'interactive-tool', 'quiz'];
+            const order = ['intro', 'structure', 'vocabulary', 'interactive-tool', 'timing', 'quiz'];
             const currentIndex = order.indexOf(sectionId);
 
             if (currentIndex !== -1) {
