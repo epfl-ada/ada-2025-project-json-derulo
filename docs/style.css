@@ -274,3 +274,22 @@ a:hover {
     height: 600px;         /* Adjust as needed */
     border: none;
 }
+/* Make a container that breaks out of the narrow content column */
+.fullwidth-plot {
+    position: relative;
+    width: 100vw;                     /* full browser width */
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;               /* pulls left edge to browser edge */
+    margin-right: -50vw;              /* pulls right edge to browser edge */
+    padding: 0;                       /* remove theme padding */
+    background: white;                /* optional, makes it seamless */
+    text-align: center;
+}
+
+/* Make iframe scale correctly */
+.plot-full {
+    width: 100%;
+    height: 650px;                    /* change height as needed */
+    border: none;
+}
