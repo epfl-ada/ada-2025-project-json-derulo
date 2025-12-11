@@ -263,3 +263,14 @@ a:hover {
     font-style: normal;
     font-size: 1.1em;
 }
+.plot-wrapper {
+    max-width: 900px;      /* Fit your site's column width */
+    margin: 0 auto;        /* Center it */
+    overflow: hidden;      /* No side scrollbars */
+}
+
+.plot-frame {
+    width: 100%;           /* Shrinks automatically to wrapper */
+    height: 600px;         /* Adjust as needed */
+    border: none;
+}
