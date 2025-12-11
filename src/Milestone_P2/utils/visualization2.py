@@ -243,7 +243,7 @@ def plot_number_of_captions_vs_contests(folder_path,image_path):
     if not os.path.isdir(folder_path):
         raise FileNotFoundError(f"Folder not found: {folder_path}") #missing contests
     for contest_num in range(510, 896):
-        filename = f"{contest_num}.csv"
+        filename = f"{contest_num}_cleaned.csv" #added _cleaned to make it work in new dataset
         file_path = os.path.join(folder_path, filename)
         if os.path.exists(file_path):
             try:
