@@ -1,8 +1,35 @@
-from plotly.subplots import make_subplots
-import plotly.graph_objects as go
+import os
+from pathlib import Path
+from math import floor
+
+import numpy as np
+import pandas as pd
+import scipy.stats as stats
+
+import matplotlib.pyplot as plt
+from matplotlib.image import imread
+
 import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
+import sys
+import os
+from pathlib import Path
 import pandas as pd
 import numpy as np
+import scipy.stats as stats
+from math import floor
+import matplotlib.pyplot as plt
+import plotly.express as px 
+from pathlib import Path
+from matplotlib.image import imread
+import json
+from datetime import datetime, timedelta
+import nbimporter
+import plotly.express as px
+from scipy.ndimage import gaussian_filter1d
+import plotly.graph_objects as go
 
 
 def plot_df_pairgrid_plotly_simple(df,cols,title= 'Pair Grid Plot',**kwargs):
@@ -159,3 +186,4 @@ def heatmap(df,cols):
     fig.update_layout(width=740, height=600)
     fig.show()
     
+
