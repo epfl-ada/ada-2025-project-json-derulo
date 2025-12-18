@@ -156,12 +156,11 @@
                 <p>
                     You know that friend who takes ten minutes to get to the punchline? Do not be that friend. Our structural analysis revealed a groundbreaking truth: <strong>size matters, and smaller is better.</strong>
                 </p>
-
-                <!-- Replace the static bar plot with the interactive Plotly figure -->
-                <div class="fullwidth-plot">
-                    <iframe src="plots/structural_test.html" class="centered-plot" title = "Structural Test"></iframe>
+                <div class="article-plot">
+                    <iframe src="plots/structural_test.html"
+                            class="plot-full"
+                            title="Structural Test"></iframe>
                 </div>
-
                 <p style="text-align: center; font-family: var(--font-ui); font-size: 0.8rem; margin-top: -20px;"><em>Average Word Count</em></p>
 
                 <p>
@@ -198,16 +197,17 @@
                 <h2>Try It Yourself</h2>
                 <p>Think you can beat the algorithm? Test your caption below.</p>
             </div>
-            <div class="fullwidth-plot">
-                <iframe src="caption_analyzer.html" class="plot-full" title="Caption Analyzer"></iframe>
+            <div class="article-plot caption-analyzer">
+                <iframe src="caption_analyzer.html"
+                        class="plot-full"
+                        title="Caption Analyzer"></iframe>
             </div>
-            
         </section>
 
         <section id="themes">
             <h2>Lesson 3: The Ghost in the Machine</h2>
             <p>
-                BLABLABLA. Using <strong>Spherical k-means clustering</strong> and <strong>c-TF-IDF</strong>, we sought hidden themes.
+                Relations entre thème présent dans les captions et l'image. Using <strong>Spherical k-means clustering</strong> and <strong>c-TF-IDF</strong>, we sought hidden themes.
             </p>
             <p>
                 We found that captions tend to cluster around specific topics depending on the image (groundbreaking, we know). 

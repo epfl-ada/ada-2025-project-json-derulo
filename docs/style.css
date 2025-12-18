@@ -312,3 +312,31 @@ section .fullwidth-plot {
     width: 100%;
     height: 650px;
 }
+/*trial */
+.article-plot {
+    width: 100%;
+}
+
+.article-plot .plot-full {
+    width: 100%;
+    height: 600px;
+}
+.plot {
+    width: 100%;
+    margin: 40px 0;
+}
+
+.plot iframe {
+    width: 100%;
+    height: 480px;     /* ← USE THIS NUMBER */
+    border: none;
+}
+/* Caption Analyzer – contained and balanced */
+.caption-analyzer {
+    max-width: 740px;   /* match article width */
+    margin: 0 auto;
+}
+
+.caption-analyzer .plot-full {
+    height: 560px;      /* ← THIS is the key */
+}
