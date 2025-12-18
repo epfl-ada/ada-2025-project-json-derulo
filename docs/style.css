@@ -293,3 +293,7 @@ a:hover {
     height: 650px;                    /* change height as needed */
     border: none;
 }
+section .fullwidth-plot {
+    padding-left: 0;
+    padding-right: 0;
+}
