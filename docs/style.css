@@ -301,9 +301,9 @@ section .fullwidth-plot {
 #interactive-tool .plot-full {
     height: 700px;
 }
-/* Centered plots (NOT full-bleed) */
+/* Wide centered plots (fits Plotly nicely) */
 .centered-plot {
-    max-width: 1100px;   /* adjust if needed */
+    max-width: 1200px;   /* ← key change */
     margin: 40px auto;
     padding: 0 20px;
 }
