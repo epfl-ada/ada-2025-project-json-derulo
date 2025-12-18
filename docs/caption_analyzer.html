@@ -181,7 +181,7 @@
             }
 
             // 2. Vocabulary Analysis (Check for long words > 10 chars)
-            const longWords = words.filter(w => w.replace(/[^a-zA-Z]/g, "").length > 10);
+            const longWords = words.filter(w => w.replace(/[^a-zA-Z]/g, "").length > 9);
             if (longWords.length > 0) {
                 vocabMsg = `<span class="badge badge-bad">Too Complex</span> "${longWords[0]}"? Easy there, Shakespeare.`;
                 score -= 1;
