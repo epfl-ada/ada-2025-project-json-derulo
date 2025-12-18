@@ -297,3 +297,7 @@ section .fullwidth-plot {
     padding-left: 0;
     padding-right: 0;
 }
+/* Caption analyzer needs a bit more vertical room */
+#interactive-tool .plot-full {
+    height: 750px;
+}
