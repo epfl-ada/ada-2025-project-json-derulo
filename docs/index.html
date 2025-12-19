@@ -241,11 +241,26 @@
         </section>
         <section id="semantic">
             <h2>Lesson 4: Semantic Analysis</h2>
-            <p>
-                We analyzed the semantic similarity between the captions and the image.
-            </p>
-            <p>
-                We found that the captions are semantically similar to the image.
+            <p>Semantics is just what words mean.<br>
+                Not how fancy they sound.<br>
+                Not how they’re arranged.<br>
+                Just: when you say something, what are you actually talking about?</p>
+                
+                <p>To impose some order on the famously unruly universe of caption contests, we used Berger’s humor categories—borrowed from a man who looked at comedy, thought “this needs diagrams,” and wrote an entire book about it.</p>
+                
+                <p><strong>The categories:</strong></p>
+                
+                <ul>
+                <li><strong>Language:</strong> jokes that live by words alone—irony, puns, allusions, repartee, wit, and ridicule.</li>
+                <li><strong>Logic:</strong> jokes powered by ideas rather than phrasing—absurdity, coincidence, conceptual surprise, and misunderstandings.</li>
+                <li><strong>Identity:</strong> jokes that turn the lens on people and personas—parody, existential humor, condescension, self-deprecation, and other small human failures.</li>
+                <li><strong>Action:</strong> jokes that skip language entirely, relying on physical or non-verbal cues like awkward bodies, odd expressions, clumsiness, or general chaos.</li>
+                </ul>
+                
+                <p>Using Ollama and the gpt-oss:120b model, we analyzed the 25 best and 25 worst captions from each contest—a practical compromise given the computational cost. Captions could belong to multiple categories, with the model assigning percentages accordingly.</p>
+                
+                <p><strong>Source:</strong> <em>An Anatomy of Humor</em>, Arthur Asa Berger (1993)</p>
+                    
             <div class="article-plot">
                 <iframe src="plots/Mean_bar_plot_caption_classification.html"
                         class="plot-full"
@@ -256,7 +271,26 @@
                         class="plot-full"
                         title="Correlation Analysis"></iframe>
             </div>
+            <p>Our results point to a humbling truth: there is no cheat code for comedy. All humor categories perform about the same, which means being funny is less about what kind of joke you tell and more about not messing it up.</p>
+
+            <p>One pattern does stand out. Language and Logic don’t like sharing the spotlight. Jokes usually twist words or ideas—not both. Try to be clever in two ways at once and the meaning trips over itself. Comedy, like traffic, works best when everyone stays in their lane.</p>
+
+            <p>Identity and Action mostly play supporting roles. A little self-awareness or physical awkwardness helps, but rarely carries the whole joke unless someone is actively falling over.</p>
+
+            <p><strong>The takeaway:</strong></p>
+
+            <ul>
+            <li>Decide where the meaning lives.</li>
+            <li>In the words.</li>
+            <li>The idea.</li>
+            <li>The person.</li>
+            <li>Or the body.</li>
+            </ul>
+
+            <p>Keep it clear, keep it simple—and remember: if the audience is busy decoding your joke, they’re not laughing at it.
+                
             </p>
+
         </section>
         <section id="timing">
             <h2>Lesson 4: Timing is Everything</h2>
