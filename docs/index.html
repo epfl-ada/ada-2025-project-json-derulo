@@ -205,27 +205,15 @@
         </section>
 
         <section id="themes">
-            <h2>Lesson 3: The Ghost in the Machine</h2>
-            <p>
-                Relations entre thème présent dans les captions et l'image. Using <strong>Spherical k-means clustering</strong> and <strong>c-TF-IDF</strong>, we sought hidden themes.
-            </p>
-            <p>
-                We found that captions tend to cluster around specific topics depending on the image (groundbreaking, we know). 
-                But teaching a computer to understand <em>why</em> a man in a chicken suit is funny remains the ultimate punchline.
-            </p>
+            <h2>Lesson 3: Themes, Comedy's Comfort Zones</h2>
         
             <!--  Embeded the Flourish visualizations right here -->
-            <div class="article-plot">
-                <div class="flourish-embed flourish-sankey"
-                    data-src="visualisation/26895805">
-                    <script src="https://public.flourish.studio/resources/embed.js"></script>
-                    <noscript>
-                        <img src="https://public.flourish.studio/visualisation/26895805/thumbnail"
-                            alt="Sankey visualization"
-                            style="width:100%; height:auto;">
-                    </noscript>
-                </div>
-            </div>
+            <p>This chart is basically a cheat sheet for what New Yorker captions keep talking about. Each big bubble is a popular theme, and the smaller bubbles inside it are the words that theme reaches for when it’s trying to make sense.</p>
+
+            <p>The rule is simple. Big bubbles mean lots of captions. Big little bubbles mean important words. Not “funniest,” just the ones doing the heavy lifting behind the scenes.</p>
+            
+            <p>Click around. Poke the bubbles. You’ll quickly notice something comforting: even comedy has habits.</p>
+                
             <div class="article-plot">
                 <div class="flourish-embed flourish-hierarchy"
                      data-src="visualisation/26895294">
@@ -237,7 +225,21 @@
                     </noscript>
                 </div>
             </div>
-        
+            <p>Most jokes come from the same ideas.<br>
+                Once you know what repeats, you’re halfway to funny.
+            </p>
+
+            <div class="article-plot">
+                <div class="flourish-embed flourish-sankey"
+                    data-src="visualisation/26895805">
+                    <script src="https://public.flourish.studio/resources/embed.js"></script>
+                    <noscript>
+                        <img src="https://public.flourish.studio/visualisation/26895805/thumbnail"
+                            alt="Sankey visualization"
+                            style="width:100%; height:auto;">
+                    </noscript>
+                </div>
+            </div>
         </section>
         <section id="semantic">
             <h2>Lesson 4: Semantic Analysis</h2>
@@ -266,16 +268,16 @@
                         class="plot-full"
                         title="Mean Analysis"></iframe>
             </div>
+            <p>Our results point to a humbling truth: there is no cheat code for comedy. All humor categories perform about the same, which means being funny is less about what kind of joke you tell and more about not messing it up. This is visible by taking a look at those bar plots : They all yield similar results in terms of mean funniness.</p>
+
             <div class="article-plot">
                 <iframe src="plots/Corrolation_caption_classification.html"
                         class="plot-full"
                         title="Correlation Analysis"></iframe>
             </div>
-            <p>Our results point to a humbling truth: there is no cheat code for comedy. All humor categories perform about the same, which means being funny is less about what kind of joke you tell and more about not messing it up.</p>
+            <p>One pattern does stand out. Language and Logic don’t like sharing the spotlight. In other words, either a joke is in the Logic category, or it is in the Language category. Jokes usually twist words or ideas—not both. Try to be clever in two ways at once and the meaning trips over itself. Comedy, like traffic, works best when everyone stays in their lane.</p>
 
-            <p>One pattern does stand out. Language and Logic don’t like sharing the spotlight. Jokes usually twist words or ideas—not both. Try to be clever in two ways at once and the meaning trips over itself. Comedy, like traffic, works best when everyone stays in their lane.</p>
-
-            <p>Identity and Action mostly play supporting roles. A little self-awareness or physical awkwardness helps, but rarely carries the whole joke unless someone is actively falling over.</p>
+            <p>Further very scientific analysis has proven that Identity and Action mostly play supporting roles. A little self-awareness or physical awkwardness helps, but rarely carries the whole joke unless someone is actively falling over.</p>
 
             <p>Long story short: Keep it clear, keep it simple—and remember: if the audience is busy decoding your joke, they’re not laughing at it.
 
