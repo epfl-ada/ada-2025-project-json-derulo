@@ -32,7 +32,7 @@ from scipy.ndimage import gaussian_filter1d
 import plotly.graph_objects as go
 
 
-def plot_df_pairgrid_plotly_simple(df,cols,title= 'Pair Grid Plot'):
+def plot_df_pairgrid_plotly(df,cols,title= 'Pair Grid Plot'):
     '''
     Takes a dataframe and makes a pairwise scatter plot with the given columns
     df: dataframe with the data
