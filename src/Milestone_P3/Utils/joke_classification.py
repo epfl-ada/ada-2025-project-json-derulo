@@ -40,7 +40,7 @@ def store_joke_classification(classifications):
         pd.DataFrame(rows).to_csv('Data_augmented/'+contest_id+'.csv',index=False)
        
         
-def _prompt_making_classifictation(cat,description=[],image=False):
+def _prompt_making_classifictation(cat,description=[]):
     '''
     This function creates the prompt for the catpion calssification.
     It explains 
@@ -58,8 +58,6 @@ def _prompt_making_classifictation(cat,description=[],image=False):
         prompt+=f"Use the image description as well as the uncanny image discription to assert the caption category :\n "
         prompt+=f"Description; {description[0]}\n"
         prompt+=f"Uncanny description; {description[1]}\n"
-    elif image:
-        prompt+=f"Use the image to assert the caption category\n"
     return prompt
 
 def check_done(path,compare=[]):
@@ -72,43 +70,63 @@ def check_done(path,compare=[]):
     missing = [c for c in compare if c not in done]
     return missing
     
-def classify_captions(cat,image_description=False,image=False,save=False,to_be_done_id=check_done('Data_augmented')):
+def classify_captions(API_key,image_description=False,save=False,to_be_done_id=check_done('Data_augmented')):
     '''
-    Takes one contest, df, and attribute the captions into one from the given categories, cat.
-    It does so using ollama with a specific model. 
-    It returns df with a new column with the joke classification
-    It takes 5s per caption, if we have 5000 it has to run for 5*5000/3600≈7h per csv, so we decide to classify a sub sampled population,
-    0,5% of the top, 0.5% of the worst caption based on The wilson score (lower bound), which is a more robust way of regarding the funniness
-    of a catption 
+    Iterates trhough all the contests, and attribute the captions into one from the Berger humor categories.
+    It does so using ollama with a specific model. In order to use this function, the user needs to make an Ollama account,
+    and created an API key.
+    API_key: User ollam API key in str format
+    image_descriptiom: bool, if true it adds the image description in the prompt
+    save: bool, if true saves the results at each contest iteration
+    to_be_done_id: list of contest ids to classify, the base values are computed by iterating the on the already done classified 
+    contests, and all the contest. If a contest is given in the list but has already been classified, the function will pass the 
+    specific contest.
+    
+    returns a dict with the contest id as key and a data frame with the results and the caption id for later manipulation.
     '''
+    
+    cat=['Language','Logic','Identity','Action'] # Berger Humor categories
+    # in case the image description is needed
     file_path = str(JSON_DIR)
     with open(file_path, "r") as file:
         contests = json.load(file)
     contests_df = pd.DataFrame(contests)
     
+    # Dict to store the data
     contest_class={}
-    os.environ['OLLAMA_API_KEY'] = 'ad40aad03c0b4f4b87c61775386ee5ea.eXWcvvEkoBT73umaM7PRW6oA'
-    client = ollama.Client(
-        host='https://ollama.com',
-        headers={'Authorization': 'Bearer ' + os.environ.get('OLLAMA_API_KEY')} # this is my key 
-        )
     
+    # Initialise the Client
+    os.environ['OLLAMA_API_KEY'] = API_key
+    client = ollama.Client(host='https://ollama.com',headers={'Authorization': 'Bearer ' + os.environ.get('OLLAMA_API_KEY')})
+    
+    #Check the contest to classify in oreder to avoid computing already classified contest
     to_be_done_id=check_done('Data_augmented',to_be_done_id)
     print(len(to_be_done_id),' contest left')
-    for contest in to_be_done_id:
+    
+    
+    for contest in to_be_done_id: # Iterates through contests
         df=pd.read_csv(str(CSV_CLEAN_DIR)+'/'+contest+'.csv',engine="python", on_bad_lines="warn")
+        
+        # Sub sammple
         length=df.shape[0]
         df1_idx=list(df.iloc[:25,:].index)
         df2_idx=list(df.iloc[(length-25):,:].index)
         index=df1_idx+df2_idx
+        
+        # In case if image description is True, gets the image description of the contest, if the argument is false, gives an empty
+        # list to the prompt making function
         descrip=[]
         if image_description:
             contest_json=contests_df[contests_df['contest_id']==contest]
             descrip=[contest_json['metadata'].iloc[0].get('image_descriptions'),contest_json['metadata'].iloc[0].get('image_uncanny_descriptions')]
+            
+        # Make the prompt
         prompt=_prompt_making_classifictation(cat,descrip)
+        
+        # prepare dict to store the contest results
         results = {}
         print('======================'+contest+'======================')
-        for idx in tqdm(index):
+        for idx in tqdm(index): # iterates trhough the subsampled list of caption ids
             row=df.iloc[idx,:]
             prompt_cap=prompt + f'Classify this caption : ' + row['caption']
             
