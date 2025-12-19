@@ -365,8 +365,9 @@
             <form id="quizForm" style="margin-top:20px;">
                 <div id="quiz-options"></div>
                 <br>
-                <button type="button" onclick="submitQuiz()" class="button">Judge Me</button>
-            </form>
+                <button id="judgeBtn" type="button" onclick="submitQuiz()" class="button">
+                    Judge Me
+                </button>            </form>
 
             <p id="result" style="margin-top:20px; font-weight:bold;"></p>
             <p id="score" style="margin-top:10px; font-weight:bold;">Score: 0 / 0</p>
@@ -464,12 +465,17 @@
         let currentQuiz = null;
         let correctScore = 0;
         let totalAttempts = 0;
+        let hasJudgedCurrentQuestion = false;
+
 
         function loadRandomQuiz() {
             if (quizIndex >= quizOrder.length) {
-                document.getElementById("result").textContent = "🎉 Quiz finished!";
+                document.getElementById("result").textContent = " Quiz finished!";
                 return;
             }
+            document.getElementById("judgeBtn").disabled = false;
+            hasJudgedCurrentQuestion = false;
+
             currentQuiz = quizData[quizOrder[quizIndex]];
             quizIndex++;
 
@@ -517,6 +523,7 @@
         loadRandomQuiz();
 
         function submitQuiz() {
+            if (hasJudgedCurrentQuestion) return;
             const selectedInput = document.querySelector('input[name="caption"]:checked');
             const result = document.getElementById("result");
 
@@ -524,6 +531,9 @@
                     result.textContent = "Indecision is the enemy of comedy. Choose.";
                     return;
                 }
+                document.getElementById("judgeBtn").disabled = true;
+                hasJudgedCurrentQuestion = true;
+
 
                 const selectedIndex = parseInt(selectedInput.value);
 
@@ -554,7 +564,7 @@
 
                 // Load next quiz or show final verdict
                 if (quizIndex < quizOrder.length) {
-                    loadRandomQuiz();
+                    setTimeout(loadRandomQuiz, 1000); // 1 second pause to see the result
                 } else {
                     result.textContent = ` Quiz finished! Final Score: ${correctScore} / ${totalAttempts}\n\n${getFunnyVerdict(correctScore, totalAttempts)}`;
                 }
