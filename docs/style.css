@@ -340,3 +340,15 @@ section .fullwidth-plot {
 .caption-analyzer .plot-full {
     height: 560px;      /* ← THIS is the key */
 }
+.stabilo {
+    font-weight: bold;
+    background: linear-gradient(
+        transparent 50%,
+        rgba(255, 210, 0, 0.85) 55%,
+        rgba(255, 210, 0, 0.85) 85%,
+        transparent 90%
+    );
+    padding: 0 6px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}

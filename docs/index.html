@@ -471,7 +471,8 @@
                     cheatSheetIframe.contentWindow.postMessage(entry.target.id, '*');
                 }
             });
-        }, { threshold: 0.5 }); // Trigger when 50% of the section is visible
+        }, { rootMargin: '-40% 0px -40% 0px' }); // Trigger when section is in the middle of the viewport
+
 
         document.querySelectorAll('section').forEach((section) => {
             sectionObserver.observe(section);
