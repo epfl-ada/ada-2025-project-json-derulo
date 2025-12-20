@@ -144,66 +144,75 @@
         const images = ["510.jpg", "511.jpg", "512.jpg"];
         const randomImage = images[Math.floor(Math.random() * images.length)];
         document.getElementById("contest-image").src = "images/quiz/" + randomImage;
-
+    
         function handleEnter(e) {
             if (e.key === 'Enter') {
                 analyzeCaption();
             }
         }
+        const deadpanNotes = [
+            "Likely funny. Or not.",
+            "Strong structure detected. Probably.",
+            "This caption has words. Good start.",
+            "Confidence interval: vibes."
+        ];
 
         function analyzeCaption() {
             const text = document.getElementById('userCaption').value;
             const words = text.trim().split(/\s+/).filter(w => w.length > 0);
             const wordCount = words.length;
+    
             const verdictDisplay = document.getElementById('result-verdict');
             const detailsDisplay = document.getElementById('result-details');
-
+    
             if (wordCount === 0) {
-                verdictDisplay.textContent = "The Page is Blank.";
-                detailsDisplay.textContent = "Minimalism is bold, but usually implies you forgot to write something.";
+                verdictDisplay.textContent = "Verdict: Bold Silence.";
+                verdictDisplay.style.color = "#555";
+                detailsDisplay.innerHTML =
+                    "Minimalism is a choice. This one is difficult to evaluate.";
                 return;
             }
+    
+            /* -------------------------------------------------
+               Fake analysis (because we proved it doesn’t work)
+            -------------------------------------------------- */
+    
+            const lengthBadges = [
+                `<span class="badge badge-good">Excellent Length</span> Editors love this. Probably.`,
+                `<span class="badge badge-warn">Questionable Length</span> This could go either way.`,
+                `<span class="badge badge-bad">Concerning Length</span> Someone might sigh.`
+            ];
+    
+            const vocabBadges = [
+                `<span class="badge badge-good">Approachable Vocabulary</span> Very humane.`,
+                `<span class="badge badge-warn">Ambitious Vocabulary</span> A little confidence showing.`,
+                `<span class="badge badge-bad">Suspicious Vocabulary</span> Trying too hard is audible.`
+            ];
+    
+            const verdicts = [
+                { text: "Verdict: This Might Be Funny.", color: "#28a745" },
+                { text: "Verdict: Hard to Say.", color: "#d39e00" },
+                { text: "Verdict: This Is Not Working.", color: "#dc3545" }
+            ];
+    
+            // 🎲 Random selection (on purpose)
+            const lengthMsg = lengthBadges[Math.floor(Math.random() * lengthBadges.length)];
+            const vocabMsg = vocabBadges[Math.floor(Math.random() * vocabBadges.length)];
+            const verdict = verdicts[Math.floor(Math.random() * verdicts.length)];
+    
+            verdictDisplay.textContent = verdict.text;
+            verdictDisplay.style.color = verdict.color;
+            const note = deadpanNotes[Math.floor(Math.random() * deadpanNotes.length)];
 
-            let score = 0;
-            let lengthMsg = "";
-            let vocabMsg = "";
-            let verdict = "";
-
-            // 1. Length Analysis (Ideal: 7-14 words)
-            if (wordCount < 5) {
-                lengthMsg = `<span class="badge badge-warn">Too Short</span> It's a caption, not a title.`;
-            } else if (wordCount >= 5 && wordCount <= 12) {
-                lengthMsg = `<span class="badge badge-good">Perfect Length</span> The editor is nodding approvedly.`;
-                score += 1;
-            } else {
-                lengthMsg = `<span class="badge badge-bad">Too Long</span> You lost the reader around word ${wordCount - 5}.`;
-                score -= 1;
-            }
-
-            // 2. Vocabulary Analysis (Check for long words > 10 chars)
-            const longWords = words.filter(w => w.replace(/[^a-zA-Z]/g, "").length > 9);
-            if (longWords.length > 0) {
-                vocabMsg = `<span class="badge badge-bad">Too Complex</span> "${longWords[0]}"? Easy there, Shakespeare.`;
-                score -= 1;
-            } else {
-                vocabMsg = `<span class="badge badge-good">Simple Vocab</span> Accessible. Good.`;
-                score += 1;
-            }
-
-            // Final Verdict
-            if (score >= 2) {
-                verdict = "Verdict: You're Funny! (Maybe even New Yorker funny.)";
-                verdictDisplay.style.color = "#28a745";
-            } else if (score >= 0) {
-                verdict = "Verdict: You're... Learning. (Keep reading the guide.)";
-                verdictDisplay.style.color = "#d39e00";
-            } else {
-                verdict = "Verdict: You're a Dummy. (Don't quit your day job.)";
-                verdictDisplay.style.color = "#dc3545";
-            }
-
-            verdictDisplay.textContent = verdict;
-            detailsDisplay.innerHTML = `${lengthMsg}<br>${vocabMsg}`;
+            detailsDisplay.innerHTML = `
+            ${lengthMsg}<br>
+            ${vocabMsg}<br><br>
+            <strong>${note}</strong><br>
+            <em>
+                We told you these metrics were not statistically significant.
+                This is what that looks like.
+            </em>
+        `;
         }
     </script>
 </body>

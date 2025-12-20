@@ -8,6 +8,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Permanent+Marker&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <script>
+        window.MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+          }
+        };
+      </script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -53,9 +61,8 @@
                 "A day without laughter is a day wasted," Charlie Chaplin once said. We say: a day analyzing 2.2 million New Yorker captions is a day spent finding out why your joke didn't win.
             </p>
             <p>
-                In recent years, the Internet culture has prioritized shorter and trending jokes. Tweets (X's?) and TikToks are defining a new era of "blink and you'll miss the punchline." We dove into the New Yorker's dataset to see if these trends hold up in the high-brow world of cartoon captions.
+                If you’re willing to learn how to be funny the hard way, welcome aboard.
             </p>
-
             <div class="highlight-box" style="font-size: 1.2rem;">
                 We analyzed over <strong>2,292,678 captions</strong> to find the secret formula of comedy.
             </div>
@@ -132,11 +139,10 @@
         
                 <li>
                     <strong>The Metadata:</strong><br>
-                    Detailed descriptions of the scene. Because computers have no soul and need to be told that a dog sitting at a bar is unusual.
+                    Detailed descriptions of the scene in the image, and what's uncanny about it. Because computers have no soul and need to be told that a dog sitting at a bar is unusual.
                 </li>
             </ul>
 
-        
             <h3>Why We Analyzed This</h3>
         
             <p>
@@ -168,11 +174,13 @@
                 
                     <!-- Mathematical formula for TTR -->
                     <p>
-                        Mathematically, the TTR is expressed as:
+                        Mathematically (and very scientifically, of course), the TTR is expressed as:
                     </p>
-                    <div style="text-align:center; font-size:1.2rem; margin: 10px 0;">
-                        <strong>TTR = V / N</strong>
-                    </div>
+                    <p style="text-align:center; margin: 15px 0;">
+                        $$
+                        \mathrm{TTR} = \frac{V}{N}
+                        $$
+                    </p>
                     <p>
                         Where <strong>V</strong> is the number of unique words (<em>types</em>) and <strong>N</strong> is the total number of words (<em>tokens</em>) in the text.
                     </p>
@@ -182,7 +190,7 @@
                             <div class="highlight-box" style="font-size: 1.2rem;">
                                 "Using sesquipedalian verbiage does not augment comedic efficacy."
                             </div>
-                            <p style="text-align: center; font-size:0.9rem;">Translation: Big words don't make you funny.</p>
+                            <p style="text-align: center; font-size:0.9rem;">Translation: Big words don't make you funny, nor do simple words.</p>
         </section>
 
         <section id="interactive-tool" style="background-color: #fafafa; padding: 40px 0;">
@@ -231,8 +239,8 @@
                 Having identified the main themes in both images and captions, we can now look at how they interact.
             </p>
             <p>
-                To understand which caption themes tend to pair with which image themes, we turn to the alluvial graph below.
-            </p>
+                To understand how image themes and caption themes interact, we turn to the alluvial graph below.
+              </p>
             <div class="article-plot">
                 <div class="flourish-embed flourish-sankey"
                     data-src="visualisation/26895805">
@@ -246,18 +254,27 @@
             </div>
             <p>
                 At first glance, the diagram looks like spaghetti. This is accurate. It’s showing many things at once.
-                (For readability, only the strongest connections are displayed.)
+                (To avoid complete chaos, only the strongest connections are shown.)
             </p>
             <p>
-                Image themes appear on the left; caption themes on the right. The flowing bands between them indicate how often
-                a given image theme is matched with a particular caption theme.
+                Image themes live on the left; caption themes live on the right. The flowing bands between them represent captions
+                linking an image theme to a caption theme. Thicker bands mean this pairing happens more often.
+            </p>              
+            <p>
+                Take <strong>T68: restaurant</strong> as an example. This image theme appears in <strong>44,525</strong> captions in total.
+                These captions then fan out across several caption themes. One particularly confident connection links
+                <strong>T68: restaurant</strong> to <strong>T28: bakery</strong>, accounting for <strong>8'289</strong> interactions between the two. Hover on this connection, and look for yourself.
+                We can also see that <strong>T28: bakery</strong> is a popular-ish caption theme, as it is connected to <strong>15'901</strong> captions.
+            </p>
+              
+            <p>
+                The plot also reveals a tendency that some themes are strongly related to themselves, thus self-pairing.
+                This may not be groundbreaking, but it is reassuring: sometimes, a restaurant remains committed to being a restaurant.
             </p>
             <p>
-                Take <strong>T68: restaurant</strong> as an example. This image theme is connected to <strong>44'525</strong> captions in total.
-                Hovering over the flows reveals how those images-related themes are distributed across caption-related themes—<strong>15'901</strong> of them, for instance,
-                belong to <strong>T28: bakery</strong>. We can see that some themes are strongly related to themselves such as restaurant-restaurant. 
-                Let's make this more visible : 
+            To visualize this better, let's take at this heat map below :
             </p>
+              
         </section>
         <section id="semantic">
             <h2>Lesson 4: Semantic Analysis, Meaning Under Examination</h2>
