@@ -320,6 +320,7 @@ section .fullwidth-plot {
 .article-plot .plot-full {
     width: 100%;
     height: 700px;
+    position: relative;
 }
 .plot {
     width: 100%;
