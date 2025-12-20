@@ -22,6 +22,44 @@ from nltk.corpus import stopwords
 
 ### Function to fetch csv files (being able to choose which one/how many to analyse)
 
+def load_docs_with_theme_csv(docs_csv_path, replace_na=False, debug=False):
+    """
+    Load the prebuilt docs_with_themes.csv file into a pandas DataFrame
+    so you don’t have to rebuild docs from individual contest files. 
+    
+    Param:
+        - docs_csv_path: str to the docs_with_themes.csv file
+        - replace_na: If True, replace NaN values in 'text' and 'clean_text' columns with empty strings
+        - debug: If True, only load the first 5000 rows for testing purposes
+        
+    Returns:
+        - df: pandas DataFrame with the contents of docs_with_themes.csv
+    """
+    docs_csv_path = Path(docs_csv_path)
+    if not docs_csv_path.exists():
+        raise FileNotFoundError(f"docs_with_themes.csv not found at {docs_csv_path}")
+
+    expected_cols = [
+        "doc_id", "contest_id", "kind", "text", "clean_text",
+        "rank", "mean", "precision", "votes", "not_funny", "somewhat_funny", "funny",
+        "theme_id", "theme_label"
+    ]
+    df = pd.read_csv(docs_csv_path)
+    missing = [c for c in expected_cols if c not in df.columns]
+    if missing:
+        raise ValueError(f"docs_with_themes.csv is missing expected columns: {missing}")
+    
+    # replace rows with NAN with empty string "" (the embedding step cannot handle those)
+    if replace_na:
+        df["text"] = df["text"].fillna("")
+        df["clean_text"] = df["clean_text"].fillna("")
+    
+    # keep only expected first 1000 rows for debugging
+    if debug:
+        df = df.head(5000)
+
+    return df
+
 def load_all_contest_data(base_path, start_id=510, end_id=895):
     """
     Load CSV files and combine into one DataFrame 
@@ -225,8 +263,8 @@ def plot_linguistic_metrics(df, top_captions, bottom_captions, corr_ttr, corr_un
     
     # High vs Low TTR examples
     plt.subplot(1, 2, 2)
-    high_ttr_captions = df.nlargest(5, 'ttr')[['caption', 'ttr', success_metric_col]]
-    low_ttr_captions = df.nsmallest(5, 'ttr')[['caption', 'ttr', success_metric_col]]
+    high_ttr_captions = df.nlargest(5, 'ttr')[['text', 'ttr', success_metric_col]]
+    low_ttr_captions = df.nsmallest(5, 'ttr')[['text', 'ttr', success_metric_col]]
     
     examples_df = pd.concat([
         high_ttr_captions.assign(type='High TTR'),
