@@ -1,4 +1,6 @@
-# Project Title: Quantifying Humour through Semantic and Structural Analysis
+# Project Title: How to be funny for dummies ?
+
+## Project Subtitle: Quantifying Humour through Semantic, Theme, Temporal, Structural Analysis  
 
 ## Abstract
 
@@ -9,6 +11,8 @@ Every week, the NewYorker magazine provides a cartoon with a missing caption, in
 In recent years, the Internet culture has prioritized shorter and trending jokes: Tweets and TikToks are becoming shorter, using primarily visual support, redefining the influence of images on jokes.
 
 In this project, we are diving into the NewYorker's dataset, which will give us insight into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, and other subtleties that make jokes "funny".
+
+A nice presentation of the project is available on the JSON-DERULO [website](https://hzwygart.github.io/ada-2025-project-json-derulo/)
 
 ---
 
@@ -24,12 +28,15 @@ We aim to tackle the following questions:
    2.b) Are jokes with specific punctuation, vocabulary and rythm more effective?
 
 3. Semantic analysis:<br>
-   3.a)Which of these categories of types of jokes perform best: dark humor, irony, social commentary, wordplay or absurdity?
+   3.a) Which of Berger Humor's categories perform best ?
 
-4. Context analysis: [dropped reasearch question]<br>
-   4.a) How do external factors influence humor? Can we link trends in the dataset to societal landmarks?
+4. Temporal analysis : <br>
+   Is there a funniness temporal aspect (i.e does people rank better captions in a specific season/month/week ?)
 
-<!-- Mettre une funiness analysis for images => justifier pourquoi certaine images ou + ou - de votes que d'autres. -->
+5. Context analysis: [dropped reasearch question]<br>
+   5.a) How do external factors influence humor? Can we link trends in the dataset to societal landmarks?
+
+<!-- Mettre une funiness analysis for images => justifier pourquoi certaine images ont + ou - de votes que d'autres. -->
 
 ---
 
@@ -49,22 +56,33 @@ We believed this would allow us to explore how real-world events during those ye
 
 However, we found that the data size was unmanageable (one month of data = 2GB), and it would also require an extensive amount of data wrangling which would not be realistic. We chose to solely focus on the other research questions.
 
-Although we do not have additional datasets, we are enriching our data through augmentation methods.
-
-<<<<<<< Updated upstream
+Although we do not have additional datasets, we enrich the data with the contest publication dates based on this [blog](https://attemptedbloggery.blogspot.com/]), and enrich the dataset with other algorithms based on the already present data.
 
 ## Methods
  All methods started with the same root: pre-procesing and data-cleaning (missing data, corrupted captions, LLM augmentation via Ollama, ...). 
 
 Here are the methods used for our [research qestions](#research-questions):
 
-1. Theme Analysis<br>
+- **Data Collection & Cleaning:** 
+ Preprocessing and more calculations in order to associate a date to the contest. 
+   - Merging all the csv's in on big csv with caption numbers.
+   - Handeling the missing data like missing contests (525 and 540), missing image descriptions (from 764), missimg contest dates
+  
+- **Exploratory Data Analysis (EDA):** 
+   - Visualization through all contests
+   - Precise visualization for each contest
+
+- **Data Augmentation:**  
+  - LLM for missing metada image related (i.e Image description, entities, ...) 
+  - Basic algorithms for dates
+
+- **Theme Analysis** <br>
    For 1.a)&b), here are the main tools and techniques used for theme extraction:
    - Pre-process to keep only meaningful words ("This is politic." => "politic")
    - Sentence Embeddings (BERT / Sentence-BERT / CLIP text encoder) - converts text => semantic vector representation.
    - Spherical k-means - clusters embeddings to form our themes.
    - c-TF-IDF (**c**lass-based **T**erm **F**requency-**I**nverse **D**ocument **F**requency) - extracts and labels the most representative words for each cluster/theme.
-   - BERTopic - topics clustering approach, but is less scalable and less controllable for large datasets.
+   - BERTopic (Machine Learning) - topics clustering approach, but is less scalable and less controllable for large datasets.
 
    The themes are extracted as such:
    - images descriptions are processed all at once, allowing them to cluster with each other independently from the captions.
@@ -75,51 +93,39 @@ Here are the methods used for our [research qestions](#research-questions):
    To assess whether image and caption themes are statistically associated, we will apply chi-square test or pointwise mutual information (PMI/NPMI) to identify theme pairs that occur more or less often.
 
 
-2. Structural Analysis <br>
-   To investigate whether joke structure affects performance, we can analyse length and punctuation/rhythm. We also use the _Type Token Ratio_, _TTR_ to measure the vocabulary richness, which is: (#unique_words) / (total_words).
+- **Structural Analysis** <br>
+   - String manipulation
 
-   We will then examine how these features relate to the mean performance metric using correlation analyses, testing whether shorter jokes or those with punctuation patterns achieve higher scores.
+   - To investigate whether joke structure affects performance, we can analyse length and punctuation/rhythm. We also use the _Type Token Ratio_, _TTR_ to measure the vocabulary richness, which is: (#unique_words) / (total_words).
+
+   -  We will then examine how these features relate to the mean performance metric using correlation analyses, testing whether shorter jokes or those with punctuation patterns achieve higher scores.
+
+   - Statistics test, t-test
    
 
-3. Semantic Analysis <br>
+- **Semantic Analysis** <br>
    Aim: compare the performance of jokes across humor categories.
    Performance is measured using the mean metric provided, which accounts for the number of votes and the funniness-score of the proposal.
 
    The main steps are:
-   - Categorize the jokes into five humor types based on the framework from deceptive humor
-   - Statistically test differences in performance between categories using methods like one-way ANOVA.
+   - Categorize the jokes into the Berger's humor categories based on the framework from deceptive humor with the help of LLMs
+   - Statistically test differences in performance between categories using basics statistics and regression.
+
+- **Temporal Analysis** <br>
+   - Basic data comparison.
+   - **TODO**
 
 
 - **Data Collection & Cleaning:** 
- - Handling missing data
- - Data enrichment
-=======
- The GDELT Events dataset corresponding to the years covered by the New Yorker Caption Contest. This will allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions.
+   - Handling missing data
+   - Handling bad csv formating
+   - Data enrichment
+======= [
+   - The GDELT Events dataset corresponding to the years covered by the New Yorker Caption Contest. This will allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions.
 
- After looking deeper into our GDELT dataset, we have also come to the conclusion that its data was too big to properly navigate in 
-
-## Methods 
-
-- **Data Collection & Cleaning:** 
- /begin{itemize}
- Preprocessing and more calculations in order to associate a date to the contest.
- -Merging all the csv's in on big csv with caption numbers.
- -Handeling the missing data like missing contests (525 and 540), missing image descriptions (from 764), missimg contest dates
->>>>>>> Stashed changes
-  
-- **Exploratory Data Analysis (EDA):** 
- - Visualization through all contests
- - Precise visualization for each contest
-
-- **Modeling:**  
-  - LLM for semantic analysis
-  - Time series models (ARIMA, Prophet) for predicting demand and congestion.  
-  - Machine learning (random forests, gradient boosting) for multi-factor prediction.  
-
-- **Semantic and Structural Analysis** 
- - data handling, semantics cleaning 
- - DHD
- - TTR: asses influence of vocabulary richness.
+   After looking deeper into our GDELT dataset, we have also come to the conclusion that its data was too big to properly navigate in ] ENELVER ? **TODO**
+   - Because the newyorker caption contest is publish weekly, take one date from the blog, cross validate with other sources, and sum 1 week for each contest difference.
+ 
 ---
 
 ## Proposed Timeline 
@@ -131,21 +137,21 @@ Here are the methods used for our [research qestions](#research-questions):
 - **December 8th - December 14th:** creation of our website. 
 - **December 15th - December 17th:** cleaning up the latest bugs.
 
-We also have a weekly meeting. 
+We also have a weekly meeting. **TODO** EST-CE QU'ON GARDE ÇA ? LES ASSITANTS PEUVENT VOIR NOTRE COMMIT HISTORY ... 
 
 ## Organization within the Team 
 
-- All team members: data acquisition and cleaning (P1) and proposition of individual problematics. 
+- All team members: data acquisition and cleaning (P1) and proposition of individual problematics as well as data visualisation 
 
-- Marina and Jeremy: semantics and theme analysis, finding tools and different libraries.
+- Marina : Begining of semantic and theme analysis and structural analysis. 
 
-- Hanna:GDELT dataset exploration and data visualisation. This was supported by Mariem and Jeremy. She also performed data wrangling, and will do the website design.
-- Adrian: extensive sanity check, adding missing metadata to json file.
+- Jeremy: Begining of semantic analysis, theme analysis.
 
-- Mariem: data enrichment, preprocessing of the json file. 
+- Hanna: GDELT dataset exploration with Mariem and Jeremy. Data wrangling, temporal analysis and website design.
+
+- Adrian: Sanity checks, adding missing metadata to json file and semantic analysis.
+
+- Mariem: data enrichment, preprocessing of the json file and theme analysis. 
 
 ---
 
-## Questions for TAs 
-1. Incorporate wikipedia links in the json file for semantics analysis.
-4. Website design.
