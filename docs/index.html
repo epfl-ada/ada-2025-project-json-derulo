@@ -136,11 +136,6 @@
                 </li>
             </ul>
 
-            <!-- Placeholder for the Donut Chart -->
-            <div id="unfunny-chart-placeholder" style="margin: 30px 0; text-align: center;">
-                 <!-- You will insert your Plotly Donut Chart here later -->
-                 <!-- Suggested Chart: 'The Unfunny Reality' - showing the massive ratio of Unfunny vs Funny votes -->
-            </div>
         
             <h3>Why We Analyzed This</h3>
         
@@ -152,25 +147,23 @@
         </section>
             
             <section id="structure">
-                <h2>Lesson 1: Brevity is the Soul of Wit</h2>
-                <p>
-                    You know that friend who takes ten minutes to get to the punchline? Do not be that friend. Our structural analysis revealed a groundbreaking truth: <strong>size matters, and smaller is better.</strong>
-                </p>
-                <div class="article-plot">
-                    <iframe src="plots/structural_test.html"
-                            class="plot-full"
-                            title="Structural Test"></iframe>
-                </div>
-                <p style="text-align: center; font-family: var(--font-ui); font-size: 0.8rem; margin-top: -20px;"><em>Average Word Count</em></p>
-
-                <p>
-                    The top-performing captions averaged <strong>9 words</strong>. The bottom ones? <strong>11.0 words</strong>. A small difference? Perhaps. But with a p-value less than 0.0001, it is statistically indisputable. Cut that extra adjective. It might cost you the contest.
-                </p>
-            </section>
-            <section id="vocabulary">
-                    <h2>Lesson 2: Structure, the skeleton of comedy</h2>
+                    <h2>Lesson 1 : Structure, the skeleton of comedy</h2>
+                    <p>Brevity is the Soul of Wit</p>
                     <p>
-                        We hypothesized that the funniest people might employ a complex vocabulary. To test this, we calculated the <strong>Type-Token Ratio (TTR)</strong> to measure vocabulary richness across millions of entries.
+                        You know that friend who takes ten minutes to get to the punchline? Do not be that friend. Our structural analysis revealed a groundbreaking truth: <strong>size matters, and smaller is better.</strong>
+                    </p>
+                    <div class="article-plot">
+                        <iframe src="plots/structural_test.html"
+                                class="plot-full"
+                                title="Structural Test"></iframe>
+                    </div>
+                    <p style="text-align: center; font-family: var(--font-ui); font-size: 0.8rem; margin-top: -20px;"><em>Average Word Count</em></p>
+    
+                    <p>
+                        The top-performing captions averaged <strong>9 words</strong>. The bottom ones? <strong>11.0 words</strong>. A small difference? Perhaps. But with a p-value less than 0.0001, it is statistically indisputable. Cut that extra adjective. It might cost you the contest.
+                    </p>
+                    <p>
+                        Secondly, we hypothesized that the funniest people might employ a complex vocabulary. To test this, we calculated the <strong>Type-Token Ratio (TTR)</strong> to measure vocabulary richness across millions of entries.
                     </p>
                 
                     <!-- Mathematical formula for TTR -->
@@ -206,7 +199,13 @@
 
         <section id="themes">
             <h2>Lesson 3: Themes, Comedy's Comfort Zones</h2>
-        
+            <p>
+                Comedy loves familiar territory. Relationships, family, social awkwardness, technology—these themes keep coming back for a reason: they’re relatable, emotionally charged, and easy to recognize.
+            </p>
+              
+            <p>
+                In this lesson, you’ll learn which topics are comedy’s safe spaces.
+            </p>
             <!--  Embeded the Flourish visualizations right here -->
             <p>This chart is basically a cheat sheet for what New Yorker captions keep talking about. Each big bubble is a popular theme, and the smaller bubbles inside it are the words that theme reaches for when it’s trying to make sense.</p>
 
@@ -228,7 +227,12 @@
             <p>Most jokes come from the same ideas.<br>
                 Once you know what repeats, you’re halfway to funny.
             </p>
-
+            <p>
+                Having identified the main themes in both images and captions, we can now look at how they interact.
+            </p>
+            <p>
+                To understand which caption themes tend to pair with which image themes, we turn to the alluvial graph below.
+            </p>
             <div class="article-plot">
                 <div class="flourish-embed flourish-sankey"
                     data-src="visualisation/26895805">
@@ -240,9 +244,23 @@
                     </noscript>
                 </div>
             </div>
+            <p>
+                At first glance, the diagram looks like spaghetti. This is accurate. It’s showing many things at once.
+                (For readability, only the strongest connections are displayed.)
+            </p>
+            <p>
+                Image themes appear on the left; caption themes on the right. The flowing bands between them indicate how often
+                a given image theme is matched with a particular caption theme.
+            </p>
+            <p>
+                Take <strong>T68: restaurant</strong> as an example. This image theme is connected to <strong>44'525</strong> captions in total.
+                Hovering over the flows reveals how those images-related themes are distributed across caption-related themes—<strong>15'901</strong> of them, for instance,
+                belong to <strong>T28: bakery</strong>. We can see that some themes are strongly related to themselves such as restaurant-restaurant. 
+                Let's make this more visible : 
+            </p>
         </section>
         <section id="semantic">
-            <h2>Lesson 4: Semantic Analysis</h2>
+            <h2>Lesson 4: Semantic Analysis, Meaning Under Examination</h2>
             <p>Semantics is just what words mean.<br>
                 Not how fancy they sound.<br>
                 Not how they’re arranged.<br>
