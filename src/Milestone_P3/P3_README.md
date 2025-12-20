@@ -12,6 +12,8 @@ In recent years, the Internet culture has prioritized shorter and trending jokes
 
 In this project, we are diving into the NewYorker's dataset, which will give us insight into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, and other subtleties that make jokes "funny".
 
+A nice presentation of the project is available on the JSON-DERULO [website](https://hzwygart.github.io/ada-2025-project-json-derulo/)
+
 ---
 
 ## Research Questions
@@ -61,54 +63,6 @@ Although we do not have additional datasets, we enrich the data with the contest
 
 Here are the methods used for our [research qestions](#research-questions):
 
-1. Theme Analysis<br>
-   For 1.a)&b), here are the main tools and techniques used for theme extraction:
-   - Pre-process to keep only meaningful words ("This is politic." => "politic")
-   - Sentence Embeddings (BERT / Sentence-BERT / CLIP text encoder) - converts text => semantic vector representation.
-   - Spherical k-means - clusters embeddings to form our themes.
-   - c-TF-IDF (**c**lass-based **T**erm **F**requency-**I**nverse **D**ocument **F**requency) - extracts and labels the most representative words for each cluster/theme.
-   - BERTopic - topics clustering approach, but is less scalable and less controllable for large datasets.
-
-   The themes are extracted as such:
-   - images descriptions are processed all at once, allowing them to cluster with each other independently from the captions.
-   - captions are processed for each contest internally and the themes extracted once at a time.
-   
-   This allows us to analyse behaviours inside each contest and to part the computation. For a general analysis across ALL the captions, we will do additional clustering to group back all the intermidiate contest-wise results.
-
-   To assess whether image and caption themes are statistically associated, we will apply chi-square test or pointwise mutual information (PMI/NPMI) to identify theme pairs that occur more or less often.
-
-
-2. Structural Analysis <br>
-   To investigate whether joke structure affects performance, we can analyse length and punctuation/rhythm. We also use the _Type Token Ratio_, _TTR_ to measure the vocabulary richness, which is: (#unique_words) / (total_words).
-
-   We will then examine how these features relate to the mean performance metric using correlation analyses, testing whether shorter jokes or those with punctuation patterns achieve higher scores.
-   
-
-3. Semantic Analysis <br>
-   Aim: compare the performance of jokes across humor categories.
-   Performance is measured using the mean metric provided, which accounts for the number of votes and the funniness-score of the proposal.
-
-   The main steps are:
-   - Categorize the jokes into the Berger's humor categories based on the framework from deceptive humor with the help of LLMs
-   - Statistically test differences in performance between categories using basics statistics and regression.
-
-4. Temporal Analysis <br>
-   - Basic data comparison.
-
-
-- **Data Collection & Cleaning:** 
- - Handling missing data
- - Handling bad csv formating
- - Data enrichment
-======= [
-   - The GDELT Events dataset corresponding to the years covered by the New Yorker Caption Contest. This will allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions.
-
-   After looking deeper into our GDELT dataset, we have also come to the conclusion that its data was too big to properly navigate in ] ENELVER ? **TODO**
-   - Because the newyorker caption contest is publish weekly, take one date from the blog, cross validate with other sources, and sum 1 week for each contest difference.
- 
-
-## Methods 
-
 - **Data Collection & Cleaning:** 
  Preprocessing and more calculations in order to associate a date to the contest. 
    - Merging all the csv's in on big csv with caption numbers.
@@ -122,21 +76,56 @@ Here are the methods used for our [research qestions](#research-questions):
   - LLM for missing metada image related (i.e Image description, entities, ...) 
   - Basic algorithms for dates
 
-- **Theme Analysis**
-   -  Machine learning (BERT) for theme detection.  
-   - 
+- **Theme Analysis** <br>
+   For 1.a)&b), here are the main tools and techniques used for theme extraction:
+   - Pre-process to keep only meaningful words ("This is politic." => "politic")
+   - Sentence Embeddings (BERT / Sentence-BERT / CLIP text encoder) - converts text => semantic vector representation.
+   - Spherical k-means - clusters embeddings to form our themes.
+   - c-TF-IDF (**c**lass-based **T**erm **F**requency-**I**nverse **D**ocument **F**requency) - extracts and labels the most representative words for each cluster/theme.
+   - BERTopic (Machine Learning) - topics clustering approach, but is less scalable and less controllable for large datasets.
 
-- **Structural Analysis**
+   The themes are extracted as such:
+   - images descriptions are processed all at once, allowing them to cluster with each other independently from the captions.
+   - captions are processed for each contest internally and the themes extracted once at a time.
+   
+   This allows us to analyse behaviours inside each contest and to part the computation. For a general analysis across ALL the captions, we will do additional clustering to group back all the intermidiate contest-wise results.
+
+   To assess whether image and caption themes are statistically associated, we will apply chi-square test or pointwise mutual information (PMI/NPMI) to identify theme pairs that occur more or less often.
+
+
+- **Structural Analysis** <br>
    - String manipulation
-   - TTR: asses influence of vocabulary richness.
+
+   - To investigate whether joke structure affects performance, we can analyse length and punctuation/rhythm. We also use the _Type Token Ratio_, _TTR_ to measure the vocabulary richness, which is: (#unique_words) / (total_words).
+
+   -  We will then examine how these features relate to the mean performance metric using correlation analyses, testing whether shorter jokes or those with punctuation patterns achieve higher scores.
+
    - Statistics test, t-test
+   
 
-- **Semantic Analysis** 
-   - Caption humor classification with LLM
-   - Basic statistics, correlation and regression
+- **Semantic Analysis** <br>
+   Aim: compare the performance of jokes across humor categories.
+   Performance is measured using the mean metric provided, which accounts for the number of votes and the funniness-score of the proposal.
 
-- **Temporal Analysis**
-   - TODO
+   The main steps are:
+   - Categorize the jokes into the Berger's humor categories based on the framework from deceptive humor with the help of LLMs
+   - Statistically test differences in performance between categories using basics statistics and regression.
+
+- **Temporal Analysis** <br>
+   - Basic data comparison.
+   - **TODO**
+
+
+- **Data Collection & Cleaning:** 
+   - Handling missing data
+   - Handling bad csv formating
+   - Data enrichment
+======= [
+   - The GDELT Events dataset corresponding to the years covered by the New Yorker Caption Contest. This will allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions.
+
+   After looking deeper into our GDELT dataset, we have also come to the conclusion that its data was too big to properly navigate in ] ENELVER ? **TODO**
+   - Because the newyorker caption contest is publish weekly, take one date from the blog, cross validate with other sources, and sum 1 week for each contest difference.
+ 
 ---
 
 ## Proposed Timeline 
