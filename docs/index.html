@@ -85,9 +85,7 @@
         <section id="data">
             <h2>The Data: A Catalog of Failed Dreams</h2>
         
-            <p class="subtitle" style="font-style: italic;">
-                Or: A comprehensive archive of 2.9 million people briefly convinced they are funny.
-            </p>
+            <p>Or: A comprehensive archive of 2.9 million people briefly convinced they are funny.</p>
         
             <div class="highlight-box" style="font-size: 1.1rem;">
                 <strong>384</strong> Cartoons<br>
@@ -104,7 +102,7 @@
             <ul style="font-size: 1.1rem; line-height: 1.8;">
                 <li>
                     <strong>The Cartoons:</strong><br>
-                    Surrealist drawings where the Grim Reaper drinks at a bar, a snowman works retail, and a teddy bear is questioned on the witness stand. You know, high art.
+                    Surrealist drawings where the Grim Reaper is wearing a tracksuit, a snowman works retail, and a teddy bear is questioned on the witness stand. You know, high art.
                     <p style="font-size: 0.95rem; color: #555; margin-top: 8px;">
                         <strong>References:</strong>
                         <a href="https://nextml.github.io/caption-contest-data/dashboards/541.html" target="_blank" rel="noopener noreferrer">Contest #541</a>,
@@ -154,7 +152,7 @@
             
             <section id="structure">
                     <h2>Lesson 1 : Structure, the skeleton of comedy</h2>
-                    <p>Brevity is the Soul of Wit</p>
+                    <p>Brevity is the Soul of Wit.</p>
                     <p>
                         You know that friend who takes ten minutes to get to the punchline? Do not be that friend. Our structural analysis revealed a groundbreaking truth: <strong>size matters, and smaller is better.</strong>
                     </p>
@@ -182,7 +180,7 @@
                         $$
                     </p>
                     <p>
-                        Where <strong>V</strong> is the number of unique words (<em>types</em>) and <strong>N</strong> is the total number of words (<em>tokens</em>) in the text. One is 
+                        Where <strong>V</strong> is the number of unique words (<em>types</em>) and <strong>N</strong> is the total number of words (<em>tokens</em>) in the text. One is solely unique words, zero is solely repeated words.
                     </p>
                     <p>
                                 <strong>The Result:</strong> Everyone is Shakespeare. Or everyone is a five-year-old. The average TTR was <strong>0.99</strong> across the board. There is effectively <em>no difference</em> in vocabulary richness between the winners and the losers.
@@ -299,8 +297,11 @@
                 </ul>
                 
                 <p>Using Ollama and the gpt-oss:120b model, we analyzed the 25 best and 25 worst captions from each contest—a practical compromise given the computational cost. Captions could belong to multiple categories, with the model assigning percentages accordingly.</p>
-                
-                <p><strong>Source:</strong> <em>An Anatomy of Humor</em>, Arthur Asa Berger (1993)</p>
+                <p style="font-size: 0.95rem; color: #555; margin-top: 8px;">
+                    <strong>References:</strong>
+                    <p><strong>Source:</strong> <em>An Anatomy of Humor</em>, Arthur Asa Berger (1993)</p>
+                </p>
+
                     
             <div class="article-plot">
                 <iframe src="plots/Mean_bar_plot_caption_classification.html"
@@ -343,7 +344,15 @@
                 Notice that massive spike? That's the <strong>COVID-19 pandemic</strong>. Apparently, when the world stops turning, everyone decides they are a comedian.
             </p>
             <p>
-                But look at the trend line. It’s dropping faster than our self-esteem after reading the comments.
+                Still, this doesn’t quite settle the case for timing.
+                Popularity spikes, funniness drifts, but correlation remains stubborn.
+                Maybe the real story isn’t when people submit captions—but <em>what</em> they’re writing about.
+            </p>
+            
+            <p>
+                So let’s put the top ten themes in motion.
+                Below, they race through time according to their mean funniness.
+                Place your bets.
             </p>
             <div class="article-plot">
                 <div class="plot-full flourish-embed flourish-bar-chart-race"
@@ -356,11 +365,14 @@
                     </noscript>
                 </div>
             </div>
-            <div class="highlight-box" style="font-size: 1.2rem;">
-                "To win, you need to go back in time to the Prime Era (circa 2020)."
-            </div>
-            <p style="text-align: center; font-size:0.9rem;">
-                Or just wait for the next global catastrophe. (Please don't.)
+            <p>
+                    If you put your money on <strong>Justice</strong>, congratulations.
+                    Its sharp rise between 2018 and 2019 coincides with a period dominated by public reckonings, trials, and questions of accountability.
+                    The most immediate association is the <em>#MeToo</em> movement, sparked by Alyssa Milano’s call to action and the Harvey Weinstein case—though confirming a direct causal link would require a far richer external dataset.
+            </p>
+            <p>
+                Also, peep the COVID-19 theme in 2016 ! Surprisingly, the comedians did not acquire prophetic powers overnight. 
+                The so-called theme is merely a semantic umbrella for harmless words like sunscreen... or <em>vaccine</em>....and <em>masks</em> — terms that aged, unfortunately, very badly.
             </p>
         </section>
 
@@ -383,35 +395,10 @@
                 "Analysis kills spontaneity. That's why we did it."
             </div>
         </section>
-        <section id="failures">
-            <h2>What We Learned (The Hard Way)</h2>
-            <p>
-                Science is about trial and error. Mostly error.
-            </p>
-            <ul>
-                <li>
-                    <strong>Classifying Humor Types:</strong> We tried to categorize jokes into "Irony", "Dark Humor", and "Wordplay". Turns out, explaining a joke to an algorithm kills both the joke and the algorithm. We decided to pivot faster than a startup in 2020.
-                </li>
-                <li>
-                    <strong>Context Analysis:</strong> We attempted to correlate humor with world events using the GDELT dataset. Then we discovered the dataset was <strong>288GB</strong>. We decided that political stability is important, but preserving our RAM is importanter.
-                </li>
-            </ul>
-        </section>
-        <section id="future">
-                <h2>To Go Further</h2>
-                <p>
-                    Our comedy career might be ending here, but the science goes on. If we had more time (and more RAM), we would:
-                </p>
-                <ul>
-                    <li><strong>Develop a "Funniness Score" Predictor:</strong> Train a model to rate your caption before you submit it, saving you from public embarrassment.</li>
-                    <li><strong>Analyze Visual Complexity:</strong> Does a simple drawing need a complex caption, or vice versa?</li>
-                    <li><strong>Finally crack the GDELT dataset, incoporate global news and cultural events to our analysis :</strong> Maybe next year, when hard drives are bigger.</li>
-                </ul>
-        </section>
-
         <!--  QUIZ SECTION STARTS HERE -->
         <section id="quiz">
-            <h2>Caption Quiz</h2>
+            <h2>Final Examination</h2>
+            <p>Have you been paying attention? Let’s test it—with a final exam and no partial ECTS credits.</p>
             <p>Which joke is <strong>(objectively)</strong> the funniest for this image?</p>
 
             <div style="text-align:center;">
@@ -430,6 +417,33 @@
         </section>
 
         <!--  QUIZ SECTION ENDS HERE -->
+        <section id="failures">
+            <h2>What We Learned (The Hard Way)</h2>
+            <p>
+                Science is about trial and error. Mostly error.
+            </p>
+            <ul>
+                <li>
+                    <strong>Classifying Humor Types:</strong> We tried to categorize jokes into "Irony", "Dark Humor", and "Wordplay". Turns out, explaining a joke to an algorithm kills both the joke and the algorithm. We decided to pivot faster than a startup in 2020.
+                </li>
+                <li>
+                    <strong>Context Analysis:</strong> We attempted to correlate humor with world events using the GDELT dataset, which is a huge database of human society. Then we discovered the dataset was <strong>288GB</strong>. We decided that political stability is important, but preserving our RAM is importanter.
+                </li>
+            </ul>
+        </section>
+        <section id="future">
+                <h2>To Go Further</h2>
+                <p>
+                    Our comedy career might be ending here, but the science goes on. If we had more time (and more RAM), we would:
+                </p>
+                <ul>
+                    <li><strong>Develop a "Funniness Score" Predictor:</strong> Train a model to rate your caption before you submit it, saving you from public embarrassment.</li>
+                    <li><strong>Analyze Visual Complexity:</strong> Does a simple drawing need a complex caption, or vice versa?</li>
+                    <li><strong>Finally crack the GDELT dataset, incoporate global news and cultural events to our analysis :</strong> Maybe next year, when hard drives are bigger.</li>
+                </ul>
+        </section>
+
+
 
         <footer>
             <div style="margin-bottom: 20px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Created by Team JSON Derulo</div>
