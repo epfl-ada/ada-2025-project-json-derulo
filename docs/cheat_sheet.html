@@ -119,27 +119,31 @@
         <ul id="checklist">
             <li id="item-intro">
                 <div class="checkbox"><span>✓</span></div>
-                Start Research
+                Start Laughing
             </li>
             <li id="item-structure">
                 <div class="checkbox"><span>✓</span></div>
-                Be Brief (10 words)
-            </li>
-            <li id="item-vocabulary">
-                <div class="checkbox"><span>✓</span></div>
-                Use Simple Words
+                Lesson 1 : Structure
             </li>
             <li id="item-interactive-tool">
                 <div class="checkbox"><span>✓</span></div>
-                Test Your Wit
+                Test your Wit
+            </li>
+            <li id="item-themes">
+                <div class="checkbox"><span>✓</span></div>
+                Lesson 2 : Theme
+            </li>
+            <li id="item-semantic">
+                <div class="checkbox"><span>✓</span></div>
+                Lesson 3 : Semantic
             </li>
             <li id="item-timing">
                 <div class="checkbox"><span>✓</span></div>
-                Master Timing
+                Lesson 4 : Master Time
             </li>
             <li id="item-quiz">
                 <div class="checkbox"><span>✓</span></div>
-                Judge Others
+                Final Examination
             </li>
         </ul>
         <div class="brand">For Dummies</div>
@@ -154,8 +158,9 @@
             const map = {
                 'intro': 'item-intro',
                 'structure': 'item-structure',
-                'vocabulary': 'item-vocabulary',
                 'interactive-tool': 'item-interactive-tool',
+                'themes': 'item-themes',
+                'semantic': 'item-semantic',
                 'timing': 'item-timing',
                 'quiz': 'item-quiz'
             };
@@ -166,7 +171,7 @@
             });
 
             // Mark previous items as checked
-            const order = ['intro', 'structure', 'vocabulary', 'interactive-tool', 'timing', 'quiz'];
+            const order = ['intro', 'structure', 'interactive-tool', 'themes', 'semantic', 'timing', 'quiz'];
             const currentIndex = order.indexOf(sectionId);
 
             if (currentIndex !== -1) {
