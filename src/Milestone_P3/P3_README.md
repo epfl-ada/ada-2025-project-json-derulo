@@ -1,6 +1,6 @@
 # How to be funny, for dummies ?
 
-## Quantifying Humour through Semantic, Theme, Temporal, Structural Analysis  
+## Quantifying Humour through Theme, Structural, Semantic and Temporal Analysis  
 
 ## Abstract
 
@@ -35,7 +35,7 @@ We aim to tackle the following questions:
    3.a) Which of Berger Humor's categories perform best ?
 
 4. Temporal analysis : <br>
-   4.a) How does timing impact the dataset captions ?
+   4.a) What patterns emerge when visualizing timing-relation questions accross time ?
 
 ## Enrich Datasets
 At first, we thought about enriching our dataset with event-based data to conduct the contextual analysis exposed above by using the [GDELT dataset](https://www.gdeltproject.org). However, we found that the data size was unmanageable (one month of data = 2GB), and it would also require an extensive amount of data wrangling which would not be realistic. We chose to solely focus on the other research questions.
@@ -49,7 +49,6 @@ Here are the methods used for our [research qestions](#research-questions):
 
 - **Data Collection & Cleaning:** 
  Preprocessing and more calculations in order to associate a date to the contest. 
-   - Merging all the csv's in on big csv with caption numbers. **EST-ce qu'on garde ça ?**
    - Handeling the missing data like missing contests (525 and 540), missing image descriptions (from 764), missing contest dates.
    - Handeling the bad formating of csv and the missing values. The rows of csv with bad formating were removed as there is sufficient and representative data without them.
   
@@ -77,9 +76,9 @@ Here are the methods used for our [research qestions](#research-questions):
 
 - **Structural Analysis** <br>
    - String manipulation
-   - To investigate whether joke structure affects performance, we can analyse length and punctuation/rhythm. We also use the _Type Token Ratio_, _TTR_ to measure the vocabulary richness, which is: (#unique_words) / (total_words).
+   - To investigate whether joke structure affects performance, we can analyse length and punctuation/rhythm. We also use the _Type Token Ratio_, _TTR_ to measure the vocabulary richness, which is: $\frac{\#\text{unique\_words}}{\text{total\_words}}$.
    -  We will then examine how these features relate to the mean performance metric using correlation analyses, testing whether shorter jokes or those with specific words achieve higher scores.
-   - Statistics test, t-test
+   - Basic statistics and a bit more advance such as correlation and pearson scores
    
 
 - **Semantic Analysis** <br>
