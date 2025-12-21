@@ -352,3 +352,16 @@ section .fullwidth-plot {
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
 }
+figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+figure figcaption {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 8px;
+  font-family: var(--font-ui);
+}
