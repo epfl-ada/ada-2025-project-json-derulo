@@ -365,3 +365,21 @@ figure figcaption {
   margin-top: 8px;
   font-family: var(--font-ui);
 }
+.for-dummies-logo {
+  width: 150px;
+  height: auto;
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.for-dummies-logo:hover {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+@keyframes wiggle {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(-5deg); }
+  50%  { transform: rotate(5deg); }
+  75%  { transform: rotate(-3deg); }
+  100% { transform: rotate(0deg); }
+}
