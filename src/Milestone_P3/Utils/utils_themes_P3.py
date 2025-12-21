@@ -294,6 +294,63 @@ def build_flourish_csv(df):
 
 
 
+def export_theme_similarity_matrix(kmeans_model, output_csv_path,
+                                   method = "cosine", float_format = "%.6f") -> pd.DataFrame:
+    """
+    Build a theme-by-theme similarity (or distance) matrix from a fitted KMeans/MiniBatchKMeans model.
+
+    Parameters
+    ----------
+    kmeans_model:
+        A fitted sklearn KMeans / MiniBatchKMeans that has .cluster_centers_ and .n_clusters.
+    method:
+        - "cosine": cosine similarity in [-1, 1] (diagonal will be 1.0)
+        - "cosine_distance": 1 - cosine similarity in [0, 2] (diagonal will be 0.0)
+        - "scaled_0_1": (cosine + 1) / 2 in [0, 1] (diagonal will be 1.0)
+    output_csv_path:
+        If provided, saves the matrix to this CSV path.
+    float_format:
+        Float formatting for CSV export.
+
+    Returns
+    -------
+    pd.DataFrame
+        Square matrix with index/columns = theme_id (0..n_clusters-1)
+    """
+    centers = np.asarray(kmeans_model.cluster_centers_, dtype=np.float32)  # (K, D)
+
+    # Normalize centroids so dot product == cosine similarity
+    norms = np.linalg.norm(centers, axis=1, keepdims=True)
+    norms = np.where(norms == 0, 1.0, norms)
+    centers_norm = centers / norms
+
+    cosine = centers_norm @ centers_norm.T  # (K, K)
+
+    if method == "cosine":
+        mat = cosine
+    elif method == "cosine_distance":
+        mat = 1.0 - cosine
+    elif method == "scaled_0_1":
+        mat = (cosine + 1.0) / 2.0
+    else:
+        raise ValueError(f"Unknown method='{method}'. Use 'cosine', 'cosine_distance', or 'scaled_0_1'.")
+
+    theme_ids = list(range(kmeans_model.n_clusters))
+    df = pd.DataFrame(mat, index=theme_ids, columns=theme_ids)
+    df.index.name = "theme_id"
+    df.columns.name = "theme_id"
+
+    if output_csv_path is not None:
+        output_csv_path = Path(output_csv_path)
+        output_csv_path.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(output_csv_path, float_format=float_format)
+
+    return df
+
+
+
+
+
 def build_theme_id_matrix(df: pd.DataFrame, matrix_value: str) -> pd.DataFrame:
     """
     Build an (image_theme_id x caption_theme_id) matrix as a pandas DataFrame.
@@ -501,6 +558,146 @@ def flourish_edges_from_cosine(edges_df, top_k=4):
     return df
 
 
+from collections import defaultdict
+
+def get_top_terms_per_theme(docs_df, tfidf_matrix, feature_names, top_k):
+    """
+    For each theme in docs_df, compute the top_k terms with highest mean TF-IDF    
+    """
+    
+    theme_to_terms = {}
+    theme_ids = sorted(docs_df["theme_id"].unique())
+
+    for theme_id in theme_ids:
+        mask = (docs_df["theme_id"] == theme_id).values
+        if mask.sum() == 0:
+            continue
+
+        # slice TF-IDF rows for this theme
+        theme_tfidf = tfidf_matrix[mask]
+
+        # compute mean tf-idf across docs in this theme (1 x n_features)
+        mean_tfidf = theme_tfidf.mean(axis=0)  # still a sparse matrix
+        mean_tfidf = np.asarray(mean_tfidf).ravel()
+
+        # get top_k indices
+        if np.all(mean_tfidf == 0):
+            # cluster with weird texts, skip
+            theme_to_terms[theme_id] = []
+            continue
+
+        top_idx = mean_tfidf.argsort()[::-1][:top_k]
+        top_terms = feature_names[top_idx].tolist()
+        theme_to_terms[theme_id] = top_terms
+
+    return theme_to_terms
+
+
+def rank_theme_labels(
+    theme_to_terms,
+    docs_df,
+    tfidf_matrix,
+    embeddings,
+    model,
+    feature_to_idx,
+    global_dfreq,
+    min_chars=3,
+    pos_filter=False,  # set True to use spaCy en_core_web_sm for POS filtering
+):
+    """
+    Description:
+        For each theme, rank candidate terms using a combined score of semantic alignment
+        with the cluster centroid and distinctiveness based on local vs global document frequency.
+    
+    Params:
+        theme_to_terms: dict mapping theme_id to list of candidate terms
+        docs_df: dataframe with documents and their theme_ids
+        tfidf_matrix: sparse matrix of TF-IDF values for all documents
+        embeddings: numpy array of shape (n_docs, embedding_dim) with document embeddings
+        model: SentenceTransformer model for encoding terms
+        feature_to_idx: dict mapping term to its index in the TF-IDF matrix
+        global_dfreq: numpy array of shape (n_features,) with global document frequency per term
+        min_chars: minimum number of characters for a term to be considered
+        pos_filter: whether to filter terms by part-of-speech (requires spaCy)
+        
+    Returns:
+        winners: dict mapping theme_id to the best label and its score
+        label_debug: dataframe with all candidate terms and their scores for inspection
+    
+    """
+    nlp = None
+    if pos_filter:
+        try:
+            import spacy
+            nlp = spacy.load("en_core_web_sm")
+        except Exception as e:
+            print("spaCy not available, skipping POS filter:", e)
+            pos_filter = False
+
+    def keep_term(term):
+        if len(term) < min_chars:
+            return False
+        if not pos_filter:
+            return True
+        doc = nlp(term)
+        return any(tok.pos_ in {"NOUN", "PROPN", "ADJ"} for tok in doc)
+
+    rows = []
+    winners = {}
+
+    for theme_id, raw_candidates in sorted(theme_to_terms.items()):
+        # clean + dedupe + ensure the term is in the vocabulary
+        candidates = []
+        seen = set()
+        for t in raw_candidates:
+            t = t.strip()
+            if t in seen or t not in feature_to_idx:
+                continue
+            if keep_term(t):
+                candidates.append(t)
+                seen.add(t)
+
+        mask = (docs_df["theme_id"] == theme_id).values
+        if not mask.any() or not candidates:
+            continue
+
+        # cluster centroid in embedding space
+        centroid = embeddings[mask].mean(axis=0)
+        centroid /= np.linalg.norm(centroid) + 1e-12
+
+        # candidate embeddings
+        cand_embs = model.encode(candidates, convert_to_numpy=True, normalize_embeddings=True)
+
+        # cluster-specific doc freq
+        cluster_dfreq = np.asarray((tfidf_matrix[mask] > 0).sum(axis=0)).ravel()
+
+        best_term, best_score = None, -np.inf
+        for term, term_emb in zip(candidates, cand_embs):
+            idx = feature_to_idx[term]
+            local_freq = cluster_dfreq[idx]
+            global_freq = global_dfreq[idx]
+            distinctiveness = local_freq / (global_freq + 1e-6)  # step 4: penalize generic words
+            sim = float(np.dot(term_emb, centroid))             # step 3: semantic alignment
+            score = sim * distinctiveness                       # combined score
+
+            rows.append(
+                {
+                    "theme_id": theme_id,
+                    "term": term,
+                    "sim": sim,
+                    "local_freq": local_freq,
+                    "global_freq": global_freq,
+                    "distinctiveness": distinctiveness,
+                    "score": score,
+                }
+            )
+            if score > best_score:
+                best_term, best_score = term, score
+
+        winners[theme_id] = {"label": best_term, "score": best_score}
+
+    label_debug = pd.DataFrame(rows).sort_values(["theme_id", "score"], ascending=[True, False])
+    return winners, label_debug
 
 
 # ================================================== #

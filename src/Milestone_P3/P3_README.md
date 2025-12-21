@@ -13,7 +13,7 @@ In recent years, the Internet culture has prioritized shorter and trending jokes
 In this project, we are diving into the NewYorker's dataset, which will give us insight into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, and other subtleties that make jokes "funny".
 
 ## Data story 
-A nice presentation of the project is available on the JSON-DERULO [website](https://hzwygart.github.io/ada-2025-project-json-derulo/)
+A nice presentation of the project is available on the JSON-DERULO website: [https://hzwygart.github.io/ada-2025-project-json-derulo/](https://hzwygart.github.io/ada-2025-project-json-derulo/)
 
 
 
