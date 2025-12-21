@@ -1,5 +1,7 @@
 # This file holds the utiliy functions concerning the themes extraction of the newyorker caption contest dataset.
 
+from __future__ import annotations
+
 # general
 from pathlib import Path
 from tqdm import tqdm
@@ -13,6 +15,14 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+
+# statistics module imports
+from dataclasses import dataclass
+from typing import Dict, Optional, Sequence, Tuple, List
+import patsy
+from scipy import stats
+import statsmodels.formula.api as smf
+import statsmodels.api as sm
 
 
 # ================================================== #
@@ -460,6 +470,38 @@ def export_flourish_theme_similarity(
     return long_df
 
 
+def flourish_edges_from_cosine(edges_df, top_k=4):
+    """
+    Build a simple Flourish edge list from cosine similarities.
+
+    Keeps the top_k strongest links per source theme and removes duplicates.
+    Returns columns: source, target, weight
+    """
+    df = edges_df[["theme_id_S", "theme_id_T", "cos_similarity"]].copy()
+
+    # keep top_k per source
+    df = (
+        df.sort_values(["theme_id_S", "cos_similarity"], ascending=[True, False])
+          .groupby("theme_id_S")
+          .head(top_k)
+    )
+
+    # make undirected + dedupe
+    s = df["theme_id_S"].astype(str)
+    t = df["theme_id_T"].astype(str)
+    df["source"] = np.where(s <= t, s, t)
+    df["target"] = np.where(s <= t, t, s)
+
+    df = (
+        df.groupby(["source", "target"], as_index=False)["cos_similarity"]
+          .max()
+          .rename(columns={"cos_similarity": "weight"})
+    )
+
+    return df
+
+
+
 
 # ================================================== #
 # ===================== PLOTTING =================== #
@@ -487,6 +529,7 @@ def export_flourish_theme_similarity(
 #         "#e74c3c"]
 
 
+
 def heatmap_from_df(
     df: pd.DataFrame,
     x_col: str,
@@ -512,7 +555,17 @@ def heatmap_from_df(
     Key feature: if your x/y ids are sparse (e.g. 1,2,5,8,74), it will plot them
     as *categorical* axes (no gaps), while keeping square cells via sizing + scaleanchor.
     """
+    image_id_to_name = (
+    df[[image_theme_col, "Image_Theme"]]
+    .drop_duplicates()
+    .set_index(image_theme_col)["Image_Theme"]
+    )
 
+    caption_id_to_name = (
+        df[[x_col, "Caption_Theme"]]
+        .drop_duplicates()
+        .set_index(x_col)["Caption_Theme"]
+    )
     # ---- Validate duplicates ----
     dup_mask = df.duplicated(subset=[x_col, y_col], keep=False)
     if dup_mask.any():
@@ -575,6 +628,14 @@ def heatmap_from_df(
         y_sorted = sorted(pivot.index.values.tolist(), key=lambda v: str(v))
 
     pivot = pivot.reindex(index=y_sorted, columns=x_sorted)
+    # Build customdata array matching pivot shape
+    customdata = np.empty(pivot.shape + (2,), dtype=object)
+
+    for i, img_id in enumerate(y_sorted):
+        for j, cap_id in enumerate(x_sorted):
+            customdata[i, j, 0] = image_id_to_name.get(img_id, "Unknown")
+            customdata[i, j, 1] = caption_id_to_name.get(cap_id, "Unknown")
+
 
     # labels used in the plot (categories must be strings to avoid Plotly treating them as continuous)
     x_labels = [str(v) for v in x_sorted] if use_cat_x else list(pivot.columns)
@@ -601,7 +662,7 @@ def heatmap_from_df(
             [{"type": "heatmap"}, {"type": "heatmap"}],
             [{"type": "heatmap"}, {"type": "domain"}],
         ],
-        subplot_titles=(title, "Average", None, None),
+        subplot_titles=(None, "Average", None, None),
     )
 
     # ---- Traces ----
@@ -610,8 +671,13 @@ def heatmap_from_df(
             z=pivot.values,
             x=x_labels,
             y=y_labels,
+            customdata=customdata,
             coloraxis="coloraxis",
-            hovertemplate="Image_Theme: %{y}<br>Caption_Theme: %{x}<br>" + value_col + ": %{z}<extra></extra>",
+            hovertemplate=
+                "<b>Image theme</b>: %{customdata[0]}<br>"
+                "<b>Caption theme</b>: %{customdata[1]}<br>"
+                "<b>" + value_col + "</b>: %{z}"
+                "<extra></extra>",
             showscale=True,
         ),
         row=1, col=1
@@ -640,13 +706,27 @@ def heatmap_from_df(
         ),
         row=2, col=1
     )
+    
 
     # ---- Layout basics ----
+
     fig.update_layout(
-        title=None,
-        coloraxis=dict(colorscale=colorscale, colorbar_title=value_col),
+        title=dict(
+            text=title,
+            font=dict(
+                family="Playfair Display, serif",
+                size=24
+            ),
+            x=0.5,
+            xanchor="center",
+            y=0.97
+        ),
+        coloraxis=dict(
+            colorscale=colorscale,
+            colorbar_title=value_col
+        ),
         plot_bgcolor="white",
-        margin=dict(l=12, r=12, t=50, b=12),
+        margin=dict(l=12, r=12, t=80, b=12),
         xaxis_title=None,
         yaxis_title=y_col,
         xaxis2=dict(visible=False),
@@ -654,6 +734,7 @@ def heatmap_from_df(
         xaxis3_title=x_col,
         yaxis3=dict(title="Average", showticklabels=False),
     )
+
 
     # ---- Axis alignment ----
     fig.update_yaxes(matches="y", row=1, col=2, showticklabels=False)
@@ -716,6 +797,7 @@ def heatmap_from_df(
     fig.update_xaxes(constrain="range", row=1, col=1)
 
     return fig
+
 
 
 def theme_id_heatmap(
@@ -816,3 +898,357 @@ def theme_id_heatmap(
     fig.update_yaxes(showticklabels=False, row=2, col=1)
 
     return fig
+
+
+
+# ================================================== #
+# ================ STATISTICS SECTION ============== #
+# ================================================== #
+
+
+@dataclass
+class ThemeAnalysisInputs:
+    theme_label_map: Dict[int, str]
+    pairs: pd.DataFrame
+    cells: pd.DataFrame
+    all_theme_ids: List[int]
+
+
+def prepare_theme_analysis_inputs(
+    df_doc: pd.DataFrame,
+    gen_labels_path: str,
+    df_flourish: Optional[pd.DataFrame] = None,
+    similarity_df: Optional[pd.DataFrame] = None,
+    expect_n_themes: int = 80,
+) -> ThemeAnalysisInputs:
+    """
+    Prepare core inputs for statistical analysis:
+      - theme_label_map: {theme_id -> gen_label} from Themes_V4_gen_labels.csv
+      - pairs: caption-level table with (contest_id, image_theme_id, caption_theme_id, cap_mean)
+      - cells: full NxN grid (image_theme_id, caption_theme_id) with count + funny_score
+
+    Parameters
+    ----------
+    df_doc:
+        Document-level dataframe containing at least:
+        ['contest_id','kind','theme_id','mean'].
+        (Your df_doc already has theme_id and mean; mean is caption funniness.)
+    gen_labels_path:
+        Path to Themes_V4_gen_labels.csv (columns: caption_id, gen_label),
+        where caption_id is the theme_id.
+    df_flourish:
+        Optional. If provided, reuse it to build `cells` instead of recomputing.
+        Must contain: ['image_theme_id','caption_theme_id','count','funny_score'].
+    similarity_df:
+        Optional. If provided, theme ids are derived from it (more reliable “complete set”).
+        Expected shape: cosine similarity matrix with a 'theme_id' column and other columns
+        representing theme ids (e.g. 0..79).
+    expect_n_themes:
+        Expected number of themes (default: 80). Used for sanity / optional range forcing.
+
+    Returns
+    -------
+    ThemeAnalysisInputs
+    """
+
+    # ---------- Load generated labels (theme_id -> gen_label) ----------
+    gen_labels_df = pd.read_csv(gen_labels_path)
+
+    if "caption_id" in gen_labels_df.columns and "theme_id" not in gen_labels_df.columns:
+        gen_labels_df = gen_labels_df.rename(columns={"caption_id": "theme_id"})
+
+    if "theme_id" not in gen_labels_df.columns or "gen_label" not in gen_labels_df.columns:
+        raise ValueError(
+            "gen_labels_path must point to a CSV with columns ['caption_id' or 'theme_id', 'gen_label']."
+        )
+
+    gen_labels_df["theme_id"] = pd.to_numeric(gen_labels_df["theme_id"], errors="coerce")
+    theme_label_map = (
+        gen_labels_df.dropna(subset=["theme_id", "gen_label"])
+        .drop_duplicates("theme_id")
+        .assign(theme_id=lambda d: d["theme_id"].astype(int))
+        .set_index("theme_id")["gen_label"]
+        .to_dict()
+    )
+
+    # ---------- Determine theme id universe ----------
+    all_theme_ids: List[int] = []
+
+    if similarity_df is not None:
+        ids = set()
+
+        if "theme_id" in similarity_df.columns:
+            ids |= set(pd.to_numeric(similarity_df["theme_id"], errors="coerce").dropna().astype(int).tolist())
+
+        # take care of ints / string dcolumn names
+        for c in similarity_df.columns:
+            if c == "theme_id":
+                continue
+            try:
+                ids.add(int(c))
+            except Exception:
+                pass
+
+        all_theme_ids = sorted(ids)
+
+    if not all_theme_ids:
+        all_theme_ids = sorted(set(df_doc["theme_id"].dropna().astype(int).unique()))
+
+    # force a contiguous range if we don't have n themes
+    if len(all_theme_ids) != expect_n_themes and all_theme_ids:
+        mn, mx = min(all_theme_ids), max(all_theme_ids)
+        # conventions: 0..79 or 1..80
+        if mn == 0 and mx == expect_n_themes - 1:
+            all_theme_ids = list(range(0, expect_n_themes))
+        elif mn == 1 and mx == expect_n_themes:
+            all_theme_ids = list(range(1, expect_n_themes + 1))
+
+    # ---------- Build caption-level pairs ----------
+    required_cols = {"contest_id", "kind", "theme_id"}
+    missing = required_cols - set(df_doc.columns)
+    if missing:
+        raise ValueError(f"df_doc is missing required columns: {sorted(missing)}")
+
+    # one image theme_id per contest
+    df_img = (
+        df_doc[df_doc["kind"].eq("image")]
+        .dropna(subset=["contest_id", "theme_id"])
+        .drop_duplicates(subset=["contest_id"])
+        .rename(columns={"theme_id": "image_theme_id"})
+        [["contest_id", "image_theme_id"]]
+    )
+
+    # captions + funniness
+    if "mean" not in df_doc.columns:
+        raise ValueError("df_doc must contain a 'mean' column (caption funniness).")
+
+    df_cap = (
+        df_doc[df_doc["kind"].eq("caption")]
+        .dropna(subset=["contest_id", "theme_id", "mean"])
+        .rename(columns={"theme_id": "caption_theme_id", "mean": "cap_mean"})
+        [["contest_id", "caption_theme_id", "cap_mean"]]
+    )
+
+    pairs = df_cap.merge(df_img, on="contest_id", how="inner", validate="many_to_one")
+    pairs["image_theme_id"] = pairs["image_theme_id"].astype(int)
+    pairs["caption_theme_id"] = pairs["caption_theme_id"].astype(int)
+
+    # ----------  Build aggregated NxN cells ----------
+    if df_flourish is not None:
+        needed = {"image_theme_id", "caption_theme_id", "count", "funny_score"}
+        if not needed.issubset(df_flourish.columns):
+            raise ValueError(f"df_flourish must contain columns: {sorted(needed)}")
+        cells = df_flourish[list(needed)].copy()
+        cells["image_theme_id"] = cells["image_theme_id"].astype(int)
+        cells["caption_theme_id"] = cells["caption_theme_id"].astype(int)
+        cells["count"] = cells["count"].fillna(0).astype(int)
+        # keep funny_score NaN where count==0
+    else:
+        links = (
+            pairs.groupby(["image_theme_id", "caption_theme_id"], sort=False)
+            .agg(count=("contest_id", "size"), funny_score=("cap_mean", "mean"))
+            .reset_index()
+        )
+
+        full_grid = pd.MultiIndex.from_product(
+            [all_theme_ids, all_theme_ids],
+            names=["image_theme_id", "caption_theme_id"],
+        ).to_frame(index=False)
+
+        cells = full_grid.merge(links, on=["image_theme_id", "caption_theme_id"], how="left")
+        cells["count"] = cells["count"].fillna(0).astype(int)
+        # funny_score => NaN when absent
+
+    return ThemeAnalysisInputs(
+        theme_label_map=theme_label_map,
+        pairs=pairs,
+        cells=cells,
+        all_theme_ids=all_theme_ids,
+    )
+
+
+
+
+# ===================== QUESTION 3 ===================== #
+
+def similarity_wide_to_long(
+    similarity_df: pd.DataFrame,
+    id_col: str = "theme_id",
+    value_name: str = "cos_sim",
+) -> pd.DataFrame:
+    """
+    Convert a wide cosine-similarity matrix to long format.
+
+    Input example:
+      theme_id, 0, 1, 2, ...
+      0,       1.0, ...
+      1,       0.40, 1.0, ...
+
+    Output:
+      theme_i, theme_j, cos_sim
+    """
+    if id_col not in similarity_df.columns:
+        raise ValueError(f"similarity_df must contain '{id_col}' column")
+
+    wide = similarity_df.copy()
+    wide[id_col] = pd.to_numeric(wide[id_col], errors="coerce")
+
+    # interpret column names as ints
+    sim_cols = []
+    for c in wide.columns:
+        if c == id_col:
+            continue
+        try:
+            sim_cols.append(int(c))
+        except Exception:
+            pass
+
+    if not sim_cols:
+        raise ValueError("Could not find similarity columns (expected columns like '0','1',... or ints).")
+
+    #Keep numeric similarity col
+    keep_cols = [id_col] + [str(c) if str(c) in wide.columns else c for c in sim_cols]
+    wide = wide[keep_cols]
+
+    # Melt to long frm
+    long = wide.melt(id_vars=[id_col], var_name="theme_j", value_name=value_name)
+    long = long.rename(columns={id_col: "theme_i"})
+
+    long["theme_i"] = pd.to_numeric(long["theme_i"], errors="coerce").astype("Int64")
+    long["theme_j"] = pd.to_numeric(long["theme_j"], errors="coerce").astype("Int64")
+    long[value_name] = pd.to_numeric(long[value_name], errors="coerce")
+
+    long = long.dropna(subset=["theme_i", "theme_j", value_name]).copy()
+    long["theme_i"] = long["theme_i"].astype(int)
+    long["theme_j"] = long["theme_j"].astype(int)
+
+    return long
+
+
+def add_similarity_to_theme_pairs(
+    df: pd.DataFrame,
+    sim_long: pd.DataFrame,
+    image_col: str = "image_theme_id",
+    caption_col: str = "caption_theme_id",
+    cos_col: str = "cos_sim",
+    distance_col: str = "distance",
+) -> pd.DataFrame:
+    """
+    Add cosine similarity and semantic distance to a dataframe that has
+    (image_theme_id, caption_theme_id) columns.
+
+    distance = 1 - cos_sim
+    """
+    needed = {image_col, caption_col}
+    if not needed.issubset(df.columns):
+        raise ValueError(f"df must contain columns {sorted(needed)}")
+
+    needed_sim = {"theme_i", "theme_j", cos_col}
+    if not needed_sim.issubset(sim_long.columns):
+        raise ValueError(f"sim_long must contain columns {sorted(needed_sim)}")
+
+    out = df.copy()
+    out[image_col] = pd.to_numeric(out[image_col], errors="coerce").astype("Int64")
+    out[caption_col] = pd.to_numeric(out[caption_col], errors="coerce").astype("Int64")
+
+    merged = out.merge(
+        sim_long.rename(columns={"theme_i": image_col, "theme_j": caption_col}),
+        on=[image_col, caption_col],
+        how="left",
+    )
+
+    merged[cos_col] = pd.to_numeric(merged[cos_col], errors="coerce")
+    merged[distance_col] = 1.0 - merged[cos_col]
+
+    return merged
+
+
+# ---------- a) model: distance -> funniness ----------
+
+@dataclass
+class Q3aResult:
+    model: object
+    distance_coef: float
+    distance_pvalue: float
+
+
+def fit_q3a_distance_predicts_funniness(
+    pairs_with_sim: pd.DataFrame,
+    distance_col: str = "distance",
+) -> Q3aResult:
+    req = {"cap_mean", "contest_id", "image_theme_id", "caption_theme_id", distance_col}
+    missing = req - set(pairs_with_sim.columns)
+    if missing:
+        raise ValueError(f"pairs_with_sim missing required columns: {sorted(missing)}")
+
+    d = pairs_with_sim.dropna(
+        subset=["cap_mean", distance_col, "contest_id", "image_theme_id", "caption_theme_id"]
+    ).copy()
+
+    # ---- FIX: convert pandas nullable Int64 -> plain int64 (or category) for patsy ----
+    for c in ["contest_id", "image_theme_id", "caption_theme_id"]:
+        d[c] = pd.to_numeric(d[c], errors="coerce")
+    d = d.dropna(subset=["contest_id", "image_theme_id", "caption_theme_id"]).copy()
+    d["contest_id"] = d["contest_id"].astype("int64")
+    d["image_theme_id"] = d["image_theme_id"].astype("int64")
+    d["caption_theme_id"] = d["caption_theme_id"].astype("int64")
+
+    # distance + outcome numeric
+    d[distance_col] = pd.to_numeric(d[distance_col], errors="coerce")
+    d["cap_mean"] = pd.to_numeric(d["cap_mean"], errors="coerce")
+    d = d.dropna(subset=[distance_col, "cap_mean"]).copy()
+
+    m = smf.ols(
+        f"cap_mean ~ {distance_col} + C(image_theme_id) + C(caption_theme_id)",
+        data=d
+    ).fit(cov_type="cluster", cov_kwds={"groups": d["contest_id"]})
+
+    coef = float(m.params.get(distance_col, np.nan))
+    pval = float(m.pvalues.get(distance_col, np.nan))
+    return Q3aResult(model=m, distance_coef=coef, distance_pvalue=pval)
+
+
+
+# ---------- b) model: distance -> frequency ----------
+
+@dataclass
+class Q3bResult:
+    model: object
+    distance_coef: float
+    distance_pvalue: float
+
+
+def fit_q3b_distance_predicts_frequency(
+    cells_with_sim: pd.DataFrame,
+    distance_col: str = "distance",
+) -> Q3bResult:
+    req = {"count", "image_theme_id", "caption_theme_id", distance_col}
+    missing = req - set(cells_with_sim.columns)
+    if missing:
+        raise ValueError(f"cells_with_sim missing required columns: {sorted(missing)}")
+
+    d = cells_with_sim.dropna(subset=[distance_col, "image_theme_id", "caption_theme_id"]).copy()
+
+    # ---- FIX: convert pandas nullable Int64 -> plain int64 for patsy ----
+    for c in ["image_theme_id", "caption_theme_id"]:
+        d[c] = pd.to_numeric(d[c], errors="coerce")
+    d = d.dropna(subset=["image_theme_id", "caption_theme_id"]).copy()
+    d["image_theme_id"] = d["image_theme_id"].astype("int64")
+    d["caption_theme_id"] = d["caption_theme_id"].astype("int64")
+
+    # outcome + predictor numeric
+    d["count"] = pd.to_numeric(d["count"], errors="coerce").fillna(0).astype(int)
+    d[distance_col] = pd.to_numeric(d[distance_col], errors="coerce")
+    d = d.dropna(subset=[distance_col]).copy()
+
+    # Negative Binomial GLM
+    glm_nb = smf.glm(
+        f"count ~ {distance_col} + C(image_theme_id) + C(caption_theme_id)",
+        data=d,
+        family=sm.families.NegativeBinomial(),
+    ).fit()
+
+    coef = float(glm_nb.params.get(distance_col, np.nan))
+    pval = float(glm_nb.pvalues.get(distance_col, np.nan))
+    return Q3bResult(model=glm_nb, distance_coef=coef, distance_pvalue=pval)
+
