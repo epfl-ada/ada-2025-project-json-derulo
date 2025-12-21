@@ -2,8 +2,10 @@
 
 # general
 from pathlib import Path
+from tqdm import tqdm
 
 # Data handling
+import json
 import pandas as pd
 import numpy as np
 
@@ -21,6 +23,18 @@ def load_contests(contests_json_path: Path):
     with open(contests_json_path, "r", encoding="utf-8") as f:
         contests = json.load(f)
     return contests
+
+def load_csv(csv_path: Path, expected_cols) -> pd.DataFrame:
+    """Load a csv file into Pandas DataFrame and check for expected columns."""
+    
+    df = pd.read_csv(csv_path)
+    
+    # check columns
+    missing = [c for c in expected_cols if c not in df.columns]
+    if missing:
+        raise ValueError(f"{csv_path} is missing expected columns: {missing}")
+    
+    return df
 
 def build_docs_dataframe(csv_path, json_path, debug=False):
     contests = load_contests(json_path)
@@ -376,16 +390,101 @@ def build_theme_id_matrix(df: pd.DataFrame, matrix_value: str) -> pd.DataFrame:
     return mat
 
 
+def export_flourish_theme_similarity(
+    sim_matrix_df: pd.DataFrame,
+    output_csv_path: str | Path | None = None,
+    keep: str = "upper",          # "upper" (unique pairs), "lower", or "all"
+    include_diagonal: bool = False,
+    float_format: str = "%.6f",
+) -> pd.DataFrame:
+    """
+    Convert a square similarity matrix into Flourish edge-list CSV:
+    theme_id_S, theme_id_T, cos_similarity
+
+    Works even if index are ints and columns are strings (or other mixed types).
+    """
+    df = sim_matrix_df.copy()
+
+    # Build a stable order mapping from the matrix index order
+    order = {label: i for i, label in enumerate(df.index)}
+
+    # Long form
+    long_df = (
+        df.stack()
+          .rename("cos_similarity")
+          .reset_index()
+          .rename(columns={"level_0": "theme_id_S", "level_1": "theme_id_T"})
+    )
+
+    # Map labels to positions for comparisons (no int/str issues)
+    long_df["_pos_S"] = long_df["theme_id_S"].map(order)
+    long_df["_pos_T"] = long_df["theme_id_T"].map(order)
+
+    # If your columns labels differ only by type (e.g., "0" vs 0), try fallback conversion
+    if long_df["_pos_T"].isna().any():
+        # Try mapping stringified labels
+        order_str = {str(k): v for k, v in order.items()}
+        long_df.loc[long_df["_pos_T"].isna(), "_pos_T"] = (
+            long_df.loc[long_df["_pos_T"].isna(), "theme_id_T"].astype(str).map(order_str)
+        )
+    if long_df["_pos_S"].isna().any():
+        order_str = {str(k): v for k, v in order.items()}
+        long_df.loc[long_df["_pos_S"].isna(), "_pos_S"] = (
+            long_df.loc[long_df["_pos_S"].isna(), "theme_id_S"].astype(str).map(order_str)
+        )
+
+    # Drop any pairs we still can't map (shouldn't happen if matrix is well-formed)
+    long_df = long_df.dropna(subset=["_pos_S", "_pos_T"])
+
+    if not include_diagonal:
+        long_df = long_df[long_df["_pos_S"] != long_df["_pos_T"]]
+
+    if keep == "upper":
+        long_df = long_df[long_df["_pos_S"] < long_df["_pos_T"]]
+    elif keep == "lower":
+        long_df = long_df[long_df["_pos_S"] > long_df["_pos_T"]]
+    elif keep == "all":
+        pass
+    else:
+        raise ValueError("keep must be one of: 'upper', 'lower', 'all'")
+
+    long_df = long_df.drop(columns=["_pos_S", "_pos_T"]).sort_values(
+        ["theme_id_S", "theme_id_T"], ignore_index=True
+    )
+
+    if output_csv_path is not None:
+        output_csv_path = Path(output_csv_path)
+        output_csv_path.parent.mkdir(parents=True, exist_ok=True)
+        long_df.to_csv(output_csv_path, index=False, float_format=float_format)
+
+    return long_df
+
+
 
 # ================================================== #
 # ===================== PLOTTING =================== #
 # ================================================== #
 
-import numpy as np
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+
+# GRADIANTS
+
+# colors=["#ffffff",
+#         "#4B5D6E",
+#         "#2c3e50",
+#         "#2980b9",
+#         "#6fa1d3", 
+#         "#27ae60",
+#         "#ffd200",
+#         "#e74c3c"]
+
+# colors = ["#ffffff",
+#         "#4B5D6E",
+#         "#2c3e50",
+#         "#ffd200",
+#         "#6fa1d3",
+#         "#0f4a85",
+#         "#27ae60",
+#         "#e74c3c"]
 
 
 def heatmap_from_df(
@@ -512,7 +611,7 @@ def heatmap_from_df(
             x=x_labels,
             y=y_labels,
             coloraxis="coloraxis",
-            hovertemplate=f"{x_col}: %{{x}}<br>{y_col}: %{{y}}<br>{value_col}: %{{z}}<extra></extra>",
+            hovertemplate="Image_Theme: %{y}<br>Caption_Theme: %{x}<br>" + value_col + ": %{z}<extra></extra>",
             showscale=True,
         ),
         row=1, col=1
@@ -525,7 +624,7 @@ def heatmap_from_df(
             y=y_labels,
             coloraxis="coloraxis",
             showscale=False,
-            hovertemplate=f"{image_theme_col}: %{{y}}<br>mean {value_col}: %{{z}}<extra></extra>",
+            hovertemplate="Image_Theme: %{y}<br>mean " + value_col + ": %{z}<extra></extra>",
         ),
         row=1, col=2
     )
@@ -537,7 +636,7 @@ def heatmap_from_df(
             y=["avg"],
             coloraxis="coloraxis",
             showscale=False,
-            hovertemplate=f"{x_col}: %{{x}}<br>mean {value_col}: %{{z}}<extra></extra>",
+            hovertemplate="Caption_Theme: %{x}<br>mean " + value_col + ": %{z}<extra></extra>",
         ),
         row=2, col=1
     )
@@ -622,7 +721,7 @@ def heatmap_from_df(
 def theme_id_heatmap(
     df: pd.DataFrame,
     theme_col: str = "theme_id",
-    title: str = "Theme Heatmap with Averages",
+    title: str = "theme_id cosine similarity matrix with averages",
     colorscale: str = "Viridis",
     reverse_colors: bool = False,
     show_values: bool = False,
