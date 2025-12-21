@@ -1,6 +1,6 @@
-# Project Title: How to be funny for dummies ?
+# How to be funny, for dummies ?
 
-## Project Subtitle: Quantifying Humour through Semantic, Theme, Temporal, Structural Analysis  
+## Quantifying Humour through Semantic, Theme, Temporal, Structural Analysis  
 
 ## Abstract
 
