@@ -107,7 +107,7 @@ Here are the methods used for our [research qestions](#research-questions):
 ### Package installation
 From the project root, please run:
 ```
-conda install --file requirements.txt
+conda env create -f environment.yml
 ```
 ### Utilisation
 Once the environment has been created, activate it and then you can go through the notebook. Some of the developped functions using Ollam need extra steps (see Below), but none of them are directly used in the notebook.
