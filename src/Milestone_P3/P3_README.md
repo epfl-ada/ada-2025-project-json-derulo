@@ -12,49 +12,33 @@ In recent years, the Internet culture has prioritized shorter and trending jokes
 
 In this project, we are diving into the NewYorker's dataset, which will give us insight into humour, one of the most complex forms of human communication. We aim to discover the themes, structures, semantics, and other subtleties that make jokes "funny".
 
+## Data story 
 A nice presentation of the project is available on the JSON-DERULO [website](https://hzwygart.github.io/ada-2025-project-json-derulo/)
 
----
+
 
 ## Research Questions
 We aim to tackle the following questions: 
 
 1. Theme analysis:<br>
-   1.a) What themes have a tendency to be ranked better?<br>
-   1.b) How do theme relationships work between image and their text prompt (one way, two-way)?
+   1.a) How do theme relationships work between image and their text prompt ? <br>
+   1.b) Are some images themes inherently funnier ? <br>
+   1.c) Are semantically distant image–caption theme pairs (lower cosine similarity / higher distance) 
+      - i funnier and/or 
+      - ii less/more frequent than semantically similar pairs?
 
 2. Structural analysis: <br>
    2.a) Are shorter jokes funnier?<br>
-   2.b) Are jokes with specific punctuation, vocabulary and rythm more effective?
+   2.b) Are jokes with specific vocabulary more effective?
 
 3. Semantic analysis:<br>
    3.a) Which of Berger Humor's categories perform best ?
 
 4. Temporal analysis : <br>
-   Is there a funniness temporal aspect (i.e does people rank better captions in a specific season/month/week ?)
+   4.a) How does timing impact the dataset captions ?
 
-5. Context analysis: [dropped reasearch question]<br>
-   5.a) How do external factors influence humor? Can we link trends in the dataset to societal landmarks?
-
-<!-- Mettre une funiness analysis for images => justifier pourquoi certaine images ont + ou - de votes que d'autres. -->
-
----
-
-## Proposed Additional Datasets
-At first, we thought about enriching our dataset with event-based data to conduct the contextual analysis exposed above by using the [GDELT dataset](https://www.gdeltproject.org). 
-
-The GDELT project is a large open database of human society and it is composed of 17 features. Here are the most relevant ones to us:
-
-| **Features** | **Description** |
-|-----------|--------------|
-| _Date_ | When the event took place |
-| _Target_ | The actor which is the recipient of that event |
-| _QuadClass_| Simplified categories of events based on their type of interaction (e.g. 'protests', 'policy change', …)|
-| _Goldstein_ | Numeric score assigned to each event for its impact on political stability |
-
-We believed this would allow us to explore how real-world events during those years may have influenced the themes and tone of humor in the contests.
-
-However, we found that the data size was unmanageable (one month of data = 2GB), and it would also require an extensive amount of data wrangling which would not be realistic. We chose to solely focus on the other research questions.
+## Enrich Datasets
+At first, we thought about enriching our dataset with event-based data to conduct the contextual analysis exposed above by using the [GDELT dataset](https://www.gdeltproject.org). However, we found that the data size was unmanageable (one month of data = 2GB), and it would also require an extensive amount of data wrangling which would not be realistic. We chose to solely focus on the other research questions.
 
 Although we do not have additional datasets, we enrich the data with the contest publication dates based on this [blog](https://attemptedbloggery.blogspot.com/]), and enrich the dataset with other algorithms based on the already present data.
 
@@ -65,79 +49,46 @@ Here are the methods used for our [research qestions](#research-questions):
 
 - **Data Collection & Cleaning:** 
  Preprocessing and more calculations in order to associate a date to the contest. 
-   - Merging all the csv's in on big csv with caption numbers.
-   - Handeling the missing data like missing contests (525 and 540), missing image descriptions (from 764), missimg contest dates
+   - Merging all the csv's in on big csv with caption numbers. **EST-ce qu'on garde ça ?**
+   - Handeling the missing data like missing contests (525 and 540), missing image descriptions (from 764), missing contest dates.
+   - Handeling the bad formating of csv and the missing values. The rows of csv with bad formating were removed as there is sufficient and representative data without them.
   
 - **Exploratory Data Analysis (EDA):** 
-   - Visualization through all contests
-   - Precise visualization for each contest
+   - Visualization through all contests.
+   - Precise visualization for each contest.
 
 - **Data Augmentation:**  
   - LLM for missing metada image related (i.e Image description, entities, ...) 
   - Basic algorithms for dates
 
 - **Theme Analysis** <br>
-   For 1.a)&b), here are the main tools and techniques used for theme extraction:
+   *Main tools and techniques used for theme extraction:*
    - Pre-process to keep only meaningful words ("This is politic." => "politic")
    - Sentence Embeddings (BERT / Sentence-BERT / CLIP text encoder) - converts text => semantic vector representation.
-   - Spherical k-means - clusters embeddings to form our themes.
+   - Unsupervised clustering (MiniBatchKMeans) to form our themes.
    - c-TF-IDF (**c**lass-based **T**erm **F**requency-**I**nverse **D**ocument **F**requency) - extracts and labels the most representative words for each cluster/theme.
-   - BERTopic (Machine Learning) - topics clustering approach, but is less scalable and less controllable for large datasets.
+   - LLMs for label generation
 
-   The themes are extracted as such:
-   - images descriptions are processed all at once, allowing them to cluster with each other independently from the captions.
-   - captions are processed for each contest internally and the themes extracted once at a time.
-   
-   This allows us to analyse behaviours inside each contest and to part the computation. For a general analysis across ALL the captions, we will do additional clustering to group back all the intermidiate contest-wise results.
-
-   To assess whether image and caption themes are statistically associated, we will apply chi-square test or pointwise mutual information (PMI/NPMI) to identify theme pairs that occur more or less often.
+   *Analysis methods:*
+   - 1.a) Spearman correlation; Pearson correlation
+   - 1.b) OLS regression (fixed effects); Mixed-effects model; Wald/LR test; FDR correction
+   - 1.c) OLS regression; Negative Binomial regression; Interaction regression
 
 
 - **Structural Analysis** <br>
    - String manipulation
-
    - To investigate whether joke structure affects performance, we can analyse length and punctuation/rhythm. We also use the _Type Token Ratio_, _TTR_ to measure the vocabulary richness, which is: (#unique_words) / (total_words).
-
-   -  We will then examine how these features relate to the mean performance metric using correlation analyses, testing whether shorter jokes or those with punctuation patterns achieve higher scores.
-
+   -  We will then examine how these features relate to the mean performance metric using correlation analyses, testing whether shorter jokes or those with specific words achieve higher scores.
    - Statistics test, t-test
    
 
 - **Semantic Analysis** <br>
-   Aim: compare the performance of jokes across humor categories.
-   Performance is measured using the mean metric provided, which accounts for the number of votes and the funniness-score of the proposal.
-
-   The main steps are:
    - Categorize the jokes into the Berger's humor categories based on the framework from deceptive humor with the help of LLMs
-   - Statistically test differences in performance between categories using basics statistics and regression.
+   - Statistically test differences in performance, based on the caption mean, between categories using basics statistics and regression.
 
 - **Temporal Analysis** <br>
    - Basic data comparison.
-   - **TODO**
 
-
-- **Data Collection & Cleaning:** 
-   - Handling missing data
-   - Handling bad csv formating
-   - Data enrichment
-======= [
-   - The GDELT Events dataset corresponding to the years covered by the New Yorker Caption Contest. This will allow us to explore how real-world events and global sentiment during those years may have influenced the themes and tone of humor in the contest’s captions. We will use this dataset for our context analysis. It is provided in an csv format and can also be accessed through the Google BigQuery API for efficient querying. It contains structured event-level data with attributes such as actors, event type, location, and media tone, and its size is manageable via filtered API requests for specific years or regions.
-
-   After looking deeper into our GDELT dataset, we have also come to the conclusion that its data was too big to properly navigate in ] ENELVER ? **TODO**
-   - Because the newyorker caption contest is publish weekly, take one date from the blog, cross validate with other sources, and sum 1 week for each contest difference.
- 
----
-
-## Proposed Timeline 
-- **Until P2 (November 5th):** Understanding, pre-processing data. Preliminary analysis and data enrichment. 
-- **November 10th - November 16th:** looking into feasability 
-- **November 17th  - November 23rd:** Identifying key patterns and trends.
-- **November 24th - November 30th:** rough visualization.
-- **December 1st - December 7th:** finalization of our analysis.
-- **December 8th - December 14th:** creation of our website. 
-- **December 15th - December 17th:** cleaning up the latest bugs.
-
-We also have a weekly meeting. **TODO** EST-CE QU'ON GARDE ÇA ? LES ASSITANTS PEUVENT VOIR NOTRE COMMIT HISTORY ... 
 
 ## Organization within the Team 
 
@@ -153,5 +104,35 @@ We also have a weekly meeting. **TODO** EST-CE QU'ON GARDE ÇA ? LES ASSITANTS P
 
 - Mariem: data enrichment, preprocessing of the json file and theme analysis. 
 
----
+## Usage
+### Package installation
+From the project root, please run:
+```
+conda install --file requirements.txt
+```
+### Utilisation
+Once the environment has been created, activate it and then you can go through the notebook. Some of the developped functions using Ollam need extra steps (see Below), but none of them are directly used in the notebook.
+### Using LLMs
 
+#### Using Ollama Cloud
+1. Obtain an API key from [Ollama API](https://ollama.com/settings/keys).
+
+2. The following functions need the user to put the key: LIST <br>
+In those functions modify the below line with the key in a string format
+
+```python
+OPENAI_API_KEY = "YOUR_API_KEY"
+```
+
+#### Downloading Ollama's model
+The function that makes the images descriptions uses llava:7b. Ollama should have been installed with the *requirements*. In order to use *add_image_descriptions()* follow the next steps:
+1. Open a terminal and activate the environment
+2. run the following command to download the model (4,7 GB) (You can click [here](https://ollama.com/library/llava) to see the model documentation):
+```
+ollama pull lava:7b
+```
+3. once it has be download run that will activate Ollama:
+```
+ollama serve
+```
+4. You can use the function !!
