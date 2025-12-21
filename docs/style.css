@@ -383,3 +383,46 @@ figure figcaption {
   75%  { transform: rotate(-3deg); }
   100% { transform: rotate(0deg); }
 }
+.horizontal-gallery {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 20px 0;
+  scroll-behavior: smooth;
+}
+
+.horizontal-gallery figure {
+  flex: 0 0 auto;
+  width: 60vw;            /* same visual scale as quiz image */
+  max-width: 60%;
+  text-align: center;
+}
+
+.horizontal-gallery img {
+  width: 100%;
+  height: auto;
+  max-height: 400px;      /* keeps them from getting too tall */
+  object-fit: contain;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.horizontal-gallery img:hover {
+  transform: scale(1.03);
+}
+
+.horizontal-gallery figcaption {
+font-family: "Playfair Display", serif;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Optional: nicer scrollbar */
+.horizontal-gallery::-webkit-scrollbar {
+  height: 8px;
+}
+
+.horizontal-gallery::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
